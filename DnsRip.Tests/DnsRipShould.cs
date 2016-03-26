@@ -54,6 +54,48 @@ namespace DnsRip.Tests
                     Evaluated = "random_string",
                     Parsed = null,
                     Type = DnsRip.InputType.Invalid
+                },
+                new ParseTest
+                {
+                    Input = "hostname.com",
+                    Evaluated = "hostname.com",
+                    Parsed = "hostname.com",
+                    Type = DnsRip.InputType.Hostname
+                },
+                new ParseTest
+                {
+                    Input = "www.hostname.com",
+                    Evaluated = "www.hostname.com",
+                    Parsed = "www.hostname.com",
+                    Type = DnsRip.InputType.Hostname
+                },
+                new ParseTest
+                {
+                    Input = "www.www.hostname.com",
+                    Evaluated = "www.www.hostname.com",
+                    Parsed = "www.www.hostname.com",
+                    Type = DnsRip.InputType.Hostname
+                },
+                new ParseTest
+                {
+                    Input = "http://www.hostname.com",
+                    Evaluated = "http://www.hostname.com",
+                    Parsed = "www.hostname.com",
+                    Type = DnsRip.InputType.Hostname
+                },
+                new ParseTest
+                {
+                    Input = "http://www.hostname.com/",
+                    Evaluated = "http://www.hostname.com/",
+                    Parsed = "www.hostname.com",
+                    Type = DnsRip.InputType.Hostname
+                },
+                new ParseTest
+                {
+                    Input = "http://Hostname/  ",
+                    Evaluated = "http://hostname/",
+                    Parsed = null,
+                    Type = DnsRip.InputType.Invalid
                 }
             };
 

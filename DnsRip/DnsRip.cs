@@ -19,6 +19,7 @@ namespace DnsRip
         public enum InputType
         {
             Ip,
+            Hostname,
             Invalid
         }
 
@@ -30,6 +31,15 @@ namespace DnsRip
             {
                 Type = InputType.Ip;
                 Parsed = result.Value;
+                return;
+            }
+
+            result = Regex.Match(Evaluated, @"((([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]))($|/)");
+
+            if (result.Success)
+            {
+                Type = InputType.Hostname;
+                Parsed = result.Groups[1].Value;
                 return;
             }
 
