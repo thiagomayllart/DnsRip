@@ -298,6 +298,9 @@ namespace DnsRip
                 case DnsRip.QueryType.AAAA:
                     return new RecordAaaa(this);
 
+                case DnsRip.QueryType.NS:
+                    return new RecordNs(this);
+
                 default:
                     return new RecordUnknown(this);
             }
@@ -545,6 +548,21 @@ namespace DnsRip
         public override string ToString()
         {
             return Address.ToString();
+        }
+    }
+
+    public class RecordNs : Record
+    {
+        public string NsDName;
+
+        public RecordNs(RecordReader rr)
+        {
+            NsDName = rr.ReadDomainName();
+        }
+
+        public override string ToString()
+        {
+            return NsDName;
         }
     }
 

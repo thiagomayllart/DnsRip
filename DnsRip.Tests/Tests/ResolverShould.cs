@@ -134,6 +134,39 @@ namespace DnsRip.Tests.Tests
                             RecordIsIp6 = true
                         }
                     }
+                },
+                new ResolveTest
+                {
+                    Query = "google.com",
+                    Type = DnsRip.QueryType.NS,
+                    IsRecursive = true,
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.NS,
+                            RecordIsHostname = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.NS,
+                            RecordIsHostname = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.NS,
+                            RecordIsHostname = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.NS,
+                            RecordIsHostname = true
+                        }
+                    }
                 }
             };
 
