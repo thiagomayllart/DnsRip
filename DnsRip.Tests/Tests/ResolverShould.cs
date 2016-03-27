@@ -81,6 +81,45 @@ namespace DnsRip.Tests.Tests
                             RecordIsIp = true
                         }
                     }
+                },
+                new ResolveTest
+                {
+                    Query = "www.yahoo.com",
+                    Type = DnsRip.QueryType.A,
+                    IsRecursive = true,
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "www.yahoo.com.",
+                            Type = DnsRip.QueryType.CNAME,
+                            RecordIsHostname = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp = true
+                        }
+                    }
                 }
             };
 
