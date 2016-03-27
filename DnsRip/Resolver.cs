@@ -86,7 +86,7 @@ namespace DnsRip
                     //var responseTimeout = new Response1();
                     //responseTimeout.Error = "Timeout Error";
                     //return responseTimeout;
-                    return null;
+                    //return null;
                 }
 
                 return null;
@@ -300,6 +300,9 @@ namespace DnsRip
 
                 case DnsRip.QueryType.NS:
                     return new RecordNs(this);
+
+                case DnsRip.QueryType.MX:
+                    return new RecordMx(this);
 
                 default:
                     return new RecordUnknown(this);
@@ -533,7 +536,7 @@ namespace DnsRip
 
         public RecordAaaa(RecordReader rr)
         {
-            System.Net.IPAddress.TryParse(
+            IPAddress.TryParse(
                 $"{rr.ReadUInt16():x}:" +
                 $"{rr.ReadUInt16():x}:" +
                 $"{rr.ReadUInt16():x}:" +
@@ -563,6 +566,23 @@ namespace DnsRip
         public override string ToString()
         {
             return NsDName;
+        }
+    }
+
+    public class RecordMx : Record
+    {
+        public ushort Preference;
+        public string Exchange;
+
+        public RecordMx(RecordReader rr)
+        {
+            Preference = rr.ReadUInt16();
+            Exchange = rr.ReadDomainName();
+        }
+
+        public override string ToString()
+        {
+            return $"{Preference} {Exchange}";
         }
     }
 

@@ -16,12 +16,13 @@ namespace DnsRip
             A = 1,
             AAAA = 28,
             CNAME = 5,
-            NS = 2
+            NS = 2,
+            MX = 15
         }
 
         public enum OpCode
         {
-            Query = 0,
+            Query = 0
         }
 
         public enum QueryClass

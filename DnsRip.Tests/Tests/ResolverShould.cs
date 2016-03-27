@@ -33,6 +33,7 @@ namespace DnsRip.Tests.Tests
             public bool? RecordIsIp4 { get; set; }
             public bool? RecordIsIp6 { get; set; }
             public bool? RecordIsHostname { get; set; }
+            public bool? RecordIsMxRecord { get; set; }
         }
 
         private static IEnumerable<ResolveTest> GetResolveTests()
@@ -167,6 +168,45 @@ namespace DnsRip.Tests.Tests
                             RecordIsHostname = true
                         }
                     }
+                },
+                new ResolveTest
+                {
+                    Query = "google.com",
+                    Type = DnsRip.QueryType.MX,
+                    IsRecursive = true,
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.MX,
+                            RecordIsMxRecord = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.MX,
+                            RecordIsMxRecord = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.MX,
+                            RecordIsMxRecord = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.MX,
+                            RecordIsMxRecord = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.MX,
+                            RecordIsMxRecord = true
+                        }
+                    }
                 }
             };
 
@@ -199,13 +239,16 @@ namespace DnsRip.Tests.Tests
                 Assert.That(DnsRip.Utilities.IsInteger(result.Ttl), Is.EqualTo(expected.TtlIsInteger));
 
                 if (expected.RecordIsIp4.HasValue)
-                    Assert.That(Uri.CheckHostName(result.Record) == UriHostNameType.IPv4, Is.EqualTo(expected.RecordIsIp4));
+                    Assert.That(DnsRip.Utilities.IsIp4(result.Record), Is.EqualTo(expected.RecordIsIp4));
 
                 if (expected.RecordIsIp6.HasValue)
-                    Assert.That(Uri.CheckHostName(result.Record) == UriHostNameType.IPv6, Is.EqualTo(expected.RecordIsIp6));
+                    Assert.That(DnsRip.Utilities.IsIp6(result.Record), Is.EqualTo(expected.RecordIsIp6));
 
                 if (expected.RecordIsHostname.HasValue)
-                    Assert.That(Uri.CheckHostName(result.Record) == UriHostNameType.Dns, Is.EqualTo(expected.RecordIsHostname));
+                    Assert.That(DnsRip.Utilities.IsDns(result.Record), Is.EqualTo(expected.RecordIsHostname));
+
+                if (expected.RecordIsMxRecord.HasValue)
+                    Assert.That(DnsRip.Utilities.IsMx(result.Record), Is.EqualTo(expected.RecordIsMxRecord));
 
                 index++;
             }
