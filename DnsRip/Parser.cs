@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace DnsRip
 {
     public partial class DnsRip
@@ -18,19 +20,22 @@ namespace DnsRip
 
             private void ParseInput()
             {
-                string parsed;
+                var result = Regex.Match(Evaluated, @"(?:[0-9]{1,3}\.){3}[0-9]{1,3}");
 
-                if (Utilities.IsIp(Evaluated, out parsed))
+                if (result.Success)
                 {
                     Type = InputType.Ip;
-                    Parsed = parsed;
+                    Parsed = result.Value;
                     return;
                 }
 
-                if (Utilities.IsHostname(Evaluated, out parsed))
+                result = Regex.Match(Evaluated, @"((([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+" +
+                    @"([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]))(.$|$|/)");
+
+                if (result.Success)
                 {
                     Type = InputType.Hostname;
-                    Parsed = parsed;
+                    Parsed = result.Groups[1].Value;
                     return;
                 }
 

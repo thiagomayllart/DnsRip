@@ -1,6 +1,7 @@
 ﻿using DnsRip.Interfaces;
 using DnsRip.Models;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -140,10 +141,10 @@ namespace DnsRip.Tests.Tests
                 Assert.That(DnsRip.Utilities.IsInteger(result.Ttl), Is.EqualTo(expected.TtlIsInteger));
 
                 if (expected.RecordIsIp.HasValue)
-                    Assert.That(DnsRip.Utilities.IsIp(result.Record), Is.EqualTo(expected.RecordIsIp));
+                    Assert.That(Uri.CheckHostName(result.Record) == UriHostNameType.IPv4, Is.EqualTo(expected.RecordIsIp));
 
                 if (expected.RecordIsHostname.HasValue)
-                    Assert.That(DnsRip.Utilities.IsHostname(result.Record), Is.EqualTo(expected.RecordIsHostname));
+                    Assert.That(Uri.CheckHostName(result.Record) == UriHostNameType.Dns, Is.EqualTo(expected.RecordIsHostname));
 
                 index++;
             }
