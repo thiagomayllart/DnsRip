@@ -51,32 +51,26 @@ namespace DnsRip.Tests.Tests
                 },
                 new ResolveTest
                 {
-                    Query = "fd-fp3.wg1.b.yahoo.com",
+                    Query = "yahoo.com",
                     Type = DnsRip.QueryType.A,
                     IsRecursive = true,
                     Expected = new List<TestResponse>
                     {
                         new TestResponse
                         {
-                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Host = "yahoo.com.",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp = true
                         },
                         new TestResponse
                         {
-                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Host = "yahoo.com.",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp = true
                         },
                         new TestResponse
                         {
-                            Host = "fd-fp3.wg1.b.yahoo.com.",
-                            Type = DnsRip.QueryType.A,
-                            RecordIsIp = true
-                        },
-                        new TestResponse
-                        {
-                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Host = "yahoo.com.",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp = true
                         }
