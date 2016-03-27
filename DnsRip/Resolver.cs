@@ -295,6 +295,9 @@ namespace DnsRip
                 case DnsRip.QueryType.CNAME:
                     return new RecordCName(this);
 
+                case DnsRip.QueryType.AAAA:
+                    return new RecordAaaa(this);
+
                 default:
                     return new RecordUnknown(this);
             }
@@ -518,6 +521,30 @@ namespace DnsRip
         public override string ToString()
         {
             return CName;
+        }
+    }
+
+    public class RecordAaaa : Record
+    {
+        public IPAddress Address;
+
+        public RecordAaaa(RecordReader rr)
+        {
+            System.Net.IPAddress.TryParse(
+                $"{rr.ReadUInt16():x}:" +
+                $"{rr.ReadUInt16():x}:" +
+                $"{rr.ReadUInt16():x}:" +
+                $"{rr.ReadUInt16():x}:" +
+                $"{rr.ReadUInt16():x}:" +
+                $"{rr.ReadUInt16():x}:" +
+                $"{rr.ReadUInt16():x}:" +
+                $"{rr.ReadUInt16():x}",
+                out Address);
+        }
+
+        public override string ToString()
+        {
+            return Address.ToString();
         }
     }
 

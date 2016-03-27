@@ -14,7 +14,8 @@ namespace DnsRip
         public enum QueryType
         {
             A = 1,
-            CNAME = 5
+            CNAME = 5,
+            AAAA = 28
         }
 
         public enum OpCode

@@ -3,7 +3,10 @@ using DnsRip.Models;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+
+// ReSharper disable UnusedMethodReturnValue.Local
 
 namespace DnsRip.Tests.Tests
 {
@@ -27,7 +30,8 @@ namespace DnsRip.Tests.Tests
         public class TestResponse : DnsRipResponse
         {
             public bool TtlIsInteger => true;
-            public bool? RecordIsIp { get; set; }
+            public bool? RecordIsIp4 { get; set; }
+            public bool? RecordIsIp6 { get; set; }
             public bool? RecordIsHostname { get; set; }
         }
 
@@ -46,7 +50,7 @@ namespace DnsRip.Tests.Tests
                         {
                             Host = "google.com.",
                             Type = DnsRip.QueryType.A,
-                            RecordIsIp = true
+                            RecordIsIp4 = true
                         }
                     }
                 },
@@ -61,19 +65,19 @@ namespace DnsRip.Tests.Tests
                         {
                             Host = "yahoo.com.",
                             Type = DnsRip.QueryType.A,
-                            RecordIsIp = true
+                            RecordIsIp4 = true
                         },
                         new TestResponse
                         {
                             Host = "yahoo.com.",
                             Type = DnsRip.QueryType.A,
-                            RecordIsIp = true
+                            RecordIsIp4 = true
                         },
                         new TestResponse
                         {
                             Host = "yahoo.com.",
                             Type = DnsRip.QueryType.A,
-                            RecordIsIp = true
+                            RecordIsIp4 = true
                         }
                     }
                 },
@@ -94,25 +98,40 @@ namespace DnsRip.Tests.Tests
                         {
                             Host = "fd-fp3.wg1.b.yahoo.com.",
                             Type = DnsRip.QueryType.A,
-                            RecordIsIp = true
+                            RecordIsIp4 = true
                         },
                         new TestResponse
                         {
                             Host = "fd-fp3.wg1.b.yahoo.com.",
                             Type = DnsRip.QueryType.A,
-                            RecordIsIp = true
+                            RecordIsIp4 = true
                         },
                         new TestResponse
                         {
                             Host = "fd-fp3.wg1.b.yahoo.com.",
                             Type = DnsRip.QueryType.A,
-                            RecordIsIp = true
+                            RecordIsIp4 = true
                         },
                         new TestResponse
                         {
                             Host = "fd-fp3.wg1.b.yahoo.com.",
                             Type = DnsRip.QueryType.A,
-                            RecordIsIp = true
+                            RecordIsIp4 = true
+                        }
+                    }
+                },
+                new ResolveTest
+                {
+                    Query = "google.com",
+                    Type = DnsRip.QueryType.AAAA,
+                    IsRecursive = true,
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.AAAA,
+                            RecordIsIp6 = true
                         }
                     }
                 }
@@ -134,14 +153,23 @@ namespace DnsRip.Tests.Tests
 
             foreach (var result in resultSet)
             {
+                Console.WriteLine(result.Host);
+                Console.WriteLine(result.Ttl);
+                Console.WriteLine(result.Type);
+                Console.WriteLine(result.Record);
+                Console.WriteLine();
+
                 var expected = (TestResponse)expectedSet[index];
 
                 Assert.That(result.Host, Is.EqualTo(expected.Host));
                 Assert.That(result.Type, Is.EqualTo(expected.Type));
                 Assert.That(DnsRip.Utilities.IsInteger(result.Ttl), Is.EqualTo(expected.TtlIsInteger));
 
-                if (expected.RecordIsIp.HasValue)
-                    Assert.That(Uri.CheckHostName(result.Record) == UriHostNameType.IPv4, Is.EqualTo(expected.RecordIsIp));
+                if (expected.RecordIsIp4.HasValue)
+                    Assert.That(Uri.CheckHostName(result.Record) == UriHostNameType.IPv4, Is.EqualTo(expected.RecordIsIp4));
+
+                if (expected.RecordIsIp6.HasValue)
+                    Assert.That(Uri.CheckHostName(result.Record) == UriHostNameType.IPv6, Is.EqualTo(expected.RecordIsIp6));
 
                 if (expected.RecordIsHostname.HasValue)
                     Assert.That(Uri.CheckHostName(result.Record) == UriHostNameType.Dns, Is.EqualTo(expected.RecordIsHostname));
