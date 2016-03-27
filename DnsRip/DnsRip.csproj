@@ -40,8 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\DnsRipRequest.cs" />
+    <Compile Include="Models\DnsRipResponse.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Interfaces\IDnsRipRequest.cs" />
+    <Compile Include="Resolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DnsRip.cs" />
+    <Compile Include="Parser.cs" />
+    <Compile Include="Subdomains.cs" />
+    <Compile Include="Utilities.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

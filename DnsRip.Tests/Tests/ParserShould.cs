@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 // ReSharper disable UnusedMethodReturnValue.Local
 
-namespace DnsRip.Tests
+namespace DnsRip.Tests.Tests
 {
     [TestFixture]
-    public class DnsRipShould
+    public class ParserShould
     {
         public class ParseTest
         {
@@ -18,7 +18,7 @@ namespace DnsRip.Tests
 
         private static IEnumerable<ParseTest> GetParseTests()
         {
-            var parseTests = new List<ParseTest>
+            var tests = new List<ParseTest>
             {
                 new ParseTest
                 {
@@ -99,19 +99,35 @@ namespace DnsRip.Tests
                 }
             };
 
-            foreach (var parseTest in parseTests)
+            foreach (var test in tests)
             {
-                yield return parseTest;
+                yield return test;
             }
         }
 
         [Test, TestCaseSource(nameof(GetParseTests))]
         public void ParseInput(ParseTest parseTest)
         {
-            var dnsRip = new DnsRip(parseTest.Input);
+            var dnsRip = new DnsRip.Parser(parseTest.Input);
             Assert.That(dnsRip.Evaluated, Is.EqualTo(parseTest.Evaluated));
             Assert.That(dnsRip.Parsed, Is.EqualTo(parseTest.Parsed));
             Assert.That(dnsRip.Type, Is.EqualTo(parseTest.Type));
         }
+
+        //TODO: Cleanup
+
+        //[Test]
+        //public void HaveSubDomainsIfHostname()
+        //{
+        //    var dnsRip = new DnsRip("domain.com");
+        //    Assert.That(dnsRip.SubDomains, Is.All.EndsWith("."));
+        //}
+
+        //[Test]
+        //public void NotHaveSubDomainsIfIp()
+        //{
+        //    var dnsRip = new DnsRip("192.168.10.1");
+        //    Assert.That(dnsRip.SubDomains, Is.Null);
+        //}
     }
 }
