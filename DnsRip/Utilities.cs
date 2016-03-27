@@ -34,7 +34,7 @@ namespace DnsRip
             public static bool IsHostname(string query, out string hostname)
             {
                 var result = Regex.Match(query, @"((([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+" +
-                    @"([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]))($|/)");
+                    @"([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]))(.$|$|/)");
 
                 if (result.Success)
                 {

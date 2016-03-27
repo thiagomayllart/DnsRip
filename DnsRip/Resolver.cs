@@ -292,6 +292,9 @@ namespace DnsRip
                 case DnsRip.QueryType.A:
                     return new RecordA(this);
 
+                case DnsRip.QueryType.CNAME:
+                    return new RecordCName(this);
+
                 default:
                     return new RecordUnknown(this);
             }
@@ -500,6 +503,21 @@ namespace DnsRip
         public override string ToString()
         {
             return Address.ToString();
+        }
+    }
+
+    public class RecordCName : Record
+    {
+        public string CName;
+
+        public RecordCName(RecordReader rr)
+        {
+            CName = rr.ReadDomainName();
+        }
+
+        public override string ToString()
+        {
+            return CName;
         }
     }
 

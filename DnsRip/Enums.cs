@@ -13,7 +13,8 @@ namespace DnsRip
 
         public enum QueryType
         {
-            A = 1
+            A = 1,
+            CNAME = 5
         }
 
         public enum OpCode
