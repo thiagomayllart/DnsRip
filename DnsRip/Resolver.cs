@@ -77,24 +77,11 @@ namespace DnsRip
 
                             return response;
                         }
-                        catch (SocketException)
-                        {
-                            //Verbose(string.Format(";; Connection to nameserver {0} failed", (intDnsServer + 1)));
-                            continue; // next try
-                        }
                         finally
                         {
-                            //m_Unique++;
-
-                            // close the socket
                             socket.Close();
                         }
                     }
-
-                    //var responseTimeout = new Response1();
-                    //responseTimeout.Error = "Timeout Error";
-                    //return responseTimeout;
-                    //return null;
                 }
 
                 return null;
