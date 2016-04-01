@@ -6,7 +6,6 @@ namespace DnsRip.Interfaces
     {
         string Query { get; set; }
         IEnumerable<string> Servers { get; set; }
-        bool IsRecursive { get; set; }
         DnsRip.QueryType Type { get; set; }
     }
 }

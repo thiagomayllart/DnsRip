@@ -25,11 +25,19 @@ namespace DnsRip
 
             public IEnumerable<DnsRipResponse> Resolve()
             {
-                var question = new Question(_request.Query, _request.Type);
-                var request = new Request(question);
+                if (_request.Type == QueryType.PTR && (Utilities.IsIp4(_request.Query) || Utilities.IsIp6(_request.Query)))
+                    _request.Query = Utilities.ToArpaRequest(_request.Query);
 
-                request.Header.Id = (ushort)(new Random()).Next();
-                request.Header.Rd = _request.IsRecursive;
+                var question = new Question(_request.Query, _request.Type);
+
+                var request = new Request(question)
+                {
+                    Header =
+                    {
+                        Id = (ushort) new Random().Next(),
+                        Rd = true
+                    }
+                };
 
                 var response = new List<DnsRipResponse>();
                 var responseMessage = new byte[512];
@@ -208,17 +216,18 @@ namespace DnsRip
         public RecordReader(byte[] data)
         {
             _data = data;
-            _position = 0;
+            Position = 0;
         }
 
         public RecordReader(byte[] data, int position)
         {
             _data = data;
-            _position = position;
+            Position = position;
         }
 
         private readonly byte[] _data;
-        private int _position;
+
+        public int Position { get; set; }
 
         public string ReadDomainName()
         {
@@ -248,9 +257,20 @@ namespace DnsRip
             return name.Length == 0 ? "." : name.ToString();
         }
 
+        public string ReadString()
+        {
+            var length = ReadByte();
+            var str = new StringBuilder();
+
+            for (var intI = 0; intI < length; intI++)
+                str.Append(ReadChar());
+
+            return str.ToString();
+        }
+
         public byte ReadByte()
         {
-            return _position >= _data.Length ? (byte)0 : _data[_position++];
+            return Position >= _data.Length ? (byte)0 : _data[Position++];
         }
 
         public byte[] ReadBytes(int intLength)
@@ -275,7 +295,7 @@ namespace DnsRip
 
         public ushort ReadUInt16(int offset)
         {
-            _position += offset;
+            Position += offset;
 
             return ReadUInt16();
         }
@@ -303,6 +323,15 @@ namespace DnsRip
 
                 case DnsRip.QueryType.MX:
                     return new RecordMx(this);
+
+                case DnsRip.QueryType.SOA:
+                    return new RecordSoa(this);
+
+                case DnsRip.QueryType.TXT:
+                    return new RecordTxt(this, length);
+
+                case DnsRip.QueryType.PTR:
+                    return new RecordPtr(this);
 
                 default:
                     return new RecordUnknown(this);
@@ -583,6 +612,73 @@ namespace DnsRip
         public override string ToString()
         {
             return $"{Preference} {Exchange}";
+        }
+    }
+
+    public class RecordSoa : Record
+    {
+        public string MName;
+        public string RName;
+        public uint Serial;
+        public uint Refresh;
+        public uint Retry;
+        public uint Expire;
+        public uint Minimum;
+
+        public RecordSoa(RecordReader rr)
+        {
+            MName = rr.ReadDomainName();
+            RName = rr.ReadDomainName();
+            Serial = rr.ReadUInt32();
+            Refresh = rr.ReadUInt32();
+            Retry = rr.ReadUInt32();
+            Expire = rr.ReadUInt32();
+            Minimum = rr.ReadUInt32();
+        }
+
+        public override string ToString()
+        {
+            return $"{MName} {RName} {Serial} {Refresh} {Retry} {Expire} {Minimum}";
+        }
+    }
+
+    public class RecordTxt : Record
+    {
+        public List<string> Txt;
+
+        public RecordTxt(RecordReader rr, int length)
+        {
+            var pos = rr.Position;
+
+            Txt = new List<string>();
+
+            while (rr.Position - pos < length)
+                Txt.Add(rr.ReadString());
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            foreach (var txt in Txt)
+                sb.AppendFormat("\"{0}\" ", txt);
+
+            return sb.ToString().TrimEnd();
+        }
+    }
+
+    public class RecordPtr : Record
+    {
+        public string PtrDName;
+
+        public RecordPtr(RecordReader rr)
+        {
+            PtrDName = rr.ReadDomainName();
+        }
+
+        public override string ToString()
+        {
+            return PtrDName;
         }
     }
 

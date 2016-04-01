@@ -17,7 +17,10 @@ namespace DnsRip
             AAAA = 28,
             CNAME = 5,
             NS = 2,
-            MX = 15
+            MX = 15,
+            SOA = 6,
+            TXT = 16,
+            PTR = 12
         }
 
         public enum OpCode

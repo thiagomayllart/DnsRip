@@ -17,7 +17,6 @@ namespace DnsRip.Tests.Tests
         {
             public string Query { get; set; }
             public DnsRip.QueryType Type { get; set; }
-            public bool IsRecursive { get; set; }
             public IEnumerable<DnsRipResponse> Expected { get; set; }
 
             public IEnumerable<string> Servers
@@ -34,6 +33,8 @@ namespace DnsRip.Tests.Tests
             public bool? RecordIsIp6 { get; set; }
             public bool? RecordIsHostname { get; set; }
             public bool? RecordIsMxRecord { get; set; }
+            public bool? RecordIsSoaRecord { get; set; }
+            public bool? RecordIsNotEmpty { get; set; }
         }
 
         private static IEnumerable<ResolveTest> GetResolveTests()
@@ -44,7 +45,6 @@ namespace DnsRip.Tests.Tests
                 {
                     Query = "google.com",
                     Type = DnsRip.QueryType.A,
-                    IsRecursive = true,
                     Expected = new List<TestResponse>
                     {
                         new TestResponse
@@ -59,7 +59,6 @@ namespace DnsRip.Tests.Tests
                 {
                     Query = "yahoo.com",
                     Type = DnsRip.QueryType.A,
-                    IsRecursive = true,
                     Expected = new List<TestResponse>
                     {
                         new TestResponse
@@ -86,7 +85,6 @@ namespace DnsRip.Tests.Tests
                 {
                     Query = "www.yahoo.com",
                     Type = DnsRip.QueryType.A,
-                    IsRecursive = true,
                     Expected = new List<TestResponse>
                     {
                         new TestResponse
@@ -125,7 +123,6 @@ namespace DnsRip.Tests.Tests
                 {
                     Query = "google.com",
                     Type = DnsRip.QueryType.AAAA,
-                    IsRecursive = true,
                     Expected = new List<TestResponse>
                     {
                         new TestResponse
@@ -140,7 +137,6 @@ namespace DnsRip.Tests.Tests
                 {
                     Query = "google.com",
                     Type = DnsRip.QueryType.NS,
-                    IsRecursive = true,
                     Expected = new List<TestResponse>
                     {
                         new TestResponse
@@ -173,7 +169,6 @@ namespace DnsRip.Tests.Tests
                 {
                     Query = "google.com",
                     Type = DnsRip.QueryType.MX,
-                    IsRecursive = true,
                     Expected = new List<TestResponse>
                     {
                         new TestResponse
@@ -205,6 +200,62 @@ namespace DnsRip.Tests.Tests
                             Host = "google.com.",
                             Type = DnsRip.QueryType.MX,
                             RecordIsMxRecord = true
+                        }
+                    }
+                },
+                new ResolveTest
+                {
+                    Query = "google.com",
+                    Type = DnsRip.QueryType.SOA,
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.SOA,
+                            RecordIsSoaRecord = true
+                        }
+                    }
+                },
+                new ResolveTest
+                {
+                    Query = "google.com",
+                    Type = DnsRip.QueryType.TXT,
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.TXT,
+                            RecordIsNotEmpty = true
+                        }
+                    }
+                },
+                new ResolveTest
+                {
+                    Query = "8.8.4.4",
+                    Type = DnsRip.QueryType.PTR,
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "4.4.8.8.in-addr.arpa.",
+                            Type = DnsRip.QueryType.PTR,
+                            RecordIsHostname = true
+                        }
+                    }
+                },
+                new ResolveTest
+                {
+                    Query = "2607:f8b0:4009:808::200e",
+                    Type = DnsRip.QueryType.PTR,
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "e.0.0.2.0.0.0.0.0.0.0.0.0.0.0.0.8.0.8.0.9.0.0.4.0.b.8.f.7.0.6.2.ip6.arpa.",
+                            Type = DnsRip.QueryType.PTR,
+                            RecordIsHostname = true
                         }
                     }
                 }
@@ -250,8 +301,17 @@ namespace DnsRip.Tests.Tests
                 if (expected.RecordIsMxRecord.HasValue)
                     Assert.That(DnsRip.Utilities.IsMx(result.Record), Is.EqualTo(expected.RecordIsMxRecord));
 
+                if (expected.RecordIsSoaRecord.HasValue)
+                    Assert.That(DnsRip.Utilities.IsSoa(result.Record), Is.EqualTo(expected.RecordIsSoaRecord));
+
+                if (expected.RecordIsNotEmpty.HasValue)
+                    Assert.That(!string.IsNullOrEmpty(result.Record), Is.EqualTo(expected.RecordIsNotEmpty));
+
                 index++;
             }
+
+            if (index == 0)
+                Assert.Fail("No results");
         }
     }
 }
