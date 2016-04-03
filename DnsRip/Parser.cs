@@ -20,7 +20,7 @@ namespace DnsRip
 
             private void ParseInput()
             {
-                var result = Regex.Match(Evaluated, @"(?:[0-9]{1,3}\.){3}[0-9]{1,3}");
+                var result = Regex.Match(Evaluated, @"((?:[0-9]{1,3}\.){3}[0-9]{1,3}|([A-Fa-f0-9]{1,4}::?){1,7}[A-Fa-f0-9]{1,4})");
 
                 if (result.Success)
                 {
@@ -29,8 +29,7 @@ namespace DnsRip
                     return;
                 }
 
-                result = Regex.Match(Evaluated, @"((([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+" +
-                    @"([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]))(.$|$|/)");
+                result = Regex.Match(Evaluated, @"((([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]))(.$|$|/|:)");
 
                 if (result.Success)
                 {

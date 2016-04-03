@@ -48,8 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Tests\ParserShould.cs" />
-    <Compile Include="Tests\ResolverShould.cs" />
+    <Compile Include="ParserTests.cs" />
+    <Compile Include="ResolverTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

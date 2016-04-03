@@ -3,15 +3,14 @@ using DnsRip.Models;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 // ReSharper disable UnusedMethodReturnValue.Local
 
-namespace DnsRip.Tests.Tests
+namespace DnsRip.Tests
 {
     [TestFixture]
-    public class ResolverShould
+    public class ResolverTests
     {
         public class ResolveTest : IDnsRipRequest
         {

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 // ReSharper disable UnusedMethodReturnValue.Local
 
-namespace DnsRip.Tests.Tests
+namespace DnsRip.Tests
 {
     [TestFixture]
-    public class ParserShould
+    public class ParserTests
     {
         public class ParseTest
         {
@@ -39,6 +39,69 @@ namespace DnsRip.Tests.Tests
                     Input = "http://192.168.10.1/",
                     Evaluated = "http://192.168.10.1/",
                     Parsed = "192.168.10.1",
+                    Type = DnsRip.InputType.Ip
+                },
+                new ParseTest
+                {
+                    Input = "http://192.168.10.1:80",
+                    Evaluated = "http://192.168.10.1:80",
+                    Parsed = "192.168.10.1",
+                    Type = DnsRip.InputType.Ip
+                },
+                new ParseTest
+                {
+                    Input = "http://192.168.10.1:80/",
+                    Evaluated = "http://192.168.10.1:80/",
+                    Parsed = "192.168.10.1",
+                    Type = DnsRip.InputType.Ip
+                },
+                new ParseTest
+                {
+                    Input = "2001:cdba:0000:0000:0000:0000:3257:9652",
+                    Evaluated = "2001:cdba:0000:0000:0000:0000:3257:9652",
+                    Parsed = "2001:cdba:0000:0000:0000:0000:3257:9652",
+                    Type = DnsRip.InputType.Ip
+                },
+                new ParseTest
+                {
+                    Input = " 2001:cdba:0:0:0:0:3257:9652  ",
+                    Evaluated = "2001:cdba:0:0:0:0:3257:9652",
+                    Parsed = "2001:cdba:0:0:0:0:3257:9652",
+                    Type = DnsRip.InputType.Ip
+                },
+                new ParseTest
+                {
+                    Input = "2001:cdba::3257:9652",
+                    Evaluated = "2001:cdba::3257:9652",
+                    Parsed = "2001:cdba::3257:9652",
+                    Type = DnsRip.InputType.Ip
+                },
+                new ParseTest
+                {
+                    Input = "http://[2001:cdba:0000:0000:0000:0000:3257:9652]/",
+                    Evaluated = "http://[2001:cdba:0000:0000:0000:0000:3257:9652]/",
+                    Parsed = "2001:cdba:0000:0000:0000:0000:3257:9652",
+                    Type = DnsRip.InputType.Ip
+                },
+                new ParseTest
+                {
+                    Input = "http://[2001:cdba:0000:0000:0000:0000:3257:9652]:80/",
+                    Evaluated = "http://[2001:cdba:0000:0000:0000:0000:3257:9652]:80/",
+                    Parsed = "2001:cdba:0000:0000:0000:0000:3257:9652",
+                    Type = DnsRip.InputType.Ip
+                },
+                new ParseTest
+                {
+                    Input = "FE80:0000:0000:0000:0202:B3FF:FE1E:8329",
+                    Evaluated = "fe80:0000:0000:0000:0202:b3ff:fe1e:8329",
+                    Parsed = "fe80:0000:0000:0000:0202:b3ff:fe1e:8329",
+                    Type = DnsRip.InputType.Ip
+                },
+                new ParseTest
+                {
+                    Input = "FE80::0202:B3FF:FE1E:8329",
+                    Evaluated = "fe80::0202:b3ff:fe1e:8329",
+                    Parsed = "fe80::0202:b3ff:fe1e:8329",
                     Type = DnsRip.InputType.Ip
                 },
                 new ParseTest
@@ -80,6 +143,13 @@ namespace DnsRip.Tests.Tests
                 {
                     Input = "http://www.hostname.com",
                     Evaluated = "http://www.hostname.com",
+                    Parsed = "www.hostname.com",
+                    Type = DnsRip.InputType.Hostname
+                },
+                new ParseTest
+                {
+                    Input = "http://www.hostname.com:80",
+                    Evaluated = "http://www.hostname.com:80",
                     Parsed = "www.hostname.com",
                     Type = DnsRip.InputType.Hostname
                 },
