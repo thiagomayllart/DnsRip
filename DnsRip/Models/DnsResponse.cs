@@ -10,12 +10,12 @@ namespace DnsRip.Models
             var recordReader = new RecordReader(data);
             var header = new Header1(recordReader);
 
-            Questions = new List<Question>();
+            Questions = new List<DnsQuestion>();
             Answers = new List<AnswerRr>();
 
             for (var intI = 0; intI < header.QdCount; intI++)
             {
-                Questions.Add(new Question(recordReader));
+                Questions.Add(new DnsQuestion(recordReader));
             }
 
             for (var intI = 0; intI < header.AnCount; intI++)
@@ -24,7 +24,7 @@ namespace DnsRip.Models
             }
         }
 
-        public List<Question> Questions;
+        public List<DnsQuestion> Questions;
         public List<AnswerRr> Answers;
     }
 }

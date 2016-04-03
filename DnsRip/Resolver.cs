@@ -28,9 +28,9 @@ namespace DnsRip
                 if (_request.Type == QueryType.PTR && Tools.IsIp(_request.Query))
                     _request.Query = Tools.ToArpaRequest(_request.Query);
 
-                var question = new Question(_request.Query, _request.Type);
+                var question = new DnsQuestion(_request.Query, _request.Type);
                 var request = new Request(question);
-                var response = new List<ResolveResponse>();
+                var resolved = new List<ResolveResponse>();
 
                 foreach (var server in _request.Servers)
                 {
@@ -53,11 +53,11 @@ namespace DnsRip
 
                             Array.Copy(buffer, data, received);
 
-                            var response1 = new DnsResponse(data);
+                            var dnsResponse = new DnsResponse(data);
 
-                            foreach (var resp in response1.Answers)
+                            foreach (var resp in dnsResponse.Answers)
                             {
-                                response.Add(new ResolveResponse
+                                resolved.Add(new ResolveResponse
                                 {
                                     Server = server,
                                     Host = resp.Name,
@@ -81,7 +81,7 @@ namespace DnsRip
                     }
                 }
 
-                return response;
+                return resolved;
             }
         }
     }
@@ -275,7 +275,7 @@ namespace DnsRip
 
     public class Request
     {
-        public Request(Question question)
+        public Request(DnsQuestion question)
         {
             Header = new Header1();
             _question = question;
@@ -283,7 +283,7 @@ namespace DnsRip
 
         public Header1 Header;
 
-        private readonly Question _question;
+        private readonly DnsQuestion _question;
 
         public byte[] Data
         {
@@ -383,82 +383,6 @@ namespace DnsRip
         private static ushort SetBits(ushort oldValue, int position, int length, bool blnValue)
         {
             return SetBits(oldValue, position, length, blnValue ? (ushort)1 : (ushort)0);
-        }
-    }
-
-    public class Question
-    {
-        public Question(string query, DnsRip.QueryType type)
-        {
-            Query = query;
-            Type = type;
-            Class = DnsRip.QueryClass.IN;
-        }
-
-        public Question(RecordReader rr)
-        {
-            Query = rr.ReadDomainName();
-            Type = (DnsRip.QueryType)rr.ReadUInt16();
-            Class = (DnsRip.QueryClass)rr.ReadUInt16();
-        }
-
-        private string _query;
-
-        public DnsRip.QueryType Type;
-        public DnsRip.QueryClass Class;
-
-        public string Query
-        {
-            get { return _query; }
-            set
-            {
-                _query = DnsRip.Tools.ToNameFormat(value);
-            }
-        }
-
-        public byte[] Data
-        {
-            get
-            {
-                var data = new List<byte>();
-                data.AddRange(WriteName(Query));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder((ushort)Type));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder((ushort)Class));
-                return data.ToArray();
-            }
-        }
-
-        private static IEnumerable<byte> WriteName(string src)
-        {
-            src = DnsRip.Tools.ToNameFormat(src);
-
-            if (src == ".")
-                return new byte[1];
-
-            var sb = new StringBuilder();
-            int intI, intJ, intLen = src.Length;
-
-            sb.Append('\0');
-
-            for (intI = 0, intJ = 0; intI < intLen; intI++, intJ++)
-            {
-                sb.Append(src[intI]);
-
-                if (src[intI] != '.')
-                    continue;
-
-                sb[intI - intJ] = (char)(intJ & 0xff);
-                intJ = -1;
-            }
-
-            sb[sb.Length - 1] = '\0';
-
-            return Encoding.ASCII.GetBytes(sb.ToString());
-        }
-
-        public override string ToString()
-        {
-            return $"{Query,-32}\t{Class}\t{Type}";
         }
     }
 
