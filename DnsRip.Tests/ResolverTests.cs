@@ -12,11 +12,11 @@ namespace DnsRip.Tests
     [TestFixture]
     public class ResolverTests
     {
-        public class ResolveTest : IDnsRipRequest
+        public class ResolveTest : IResolveRequest
         {
             public string Query { get; set; }
             public DnsRip.QueryType Type { get; set; }
-            public IEnumerable<DnsRipResponse> Expected { get; set; }
+            public IEnumerable<ResolveResponse> Expected { get; set; }
 
             public IEnumerable<string> Servers
             {
@@ -25,7 +25,7 @@ namespace DnsRip.Tests
             }
         }
 
-        public class TestResponse : DnsRipResponse
+        public class TestResponse : ResolveResponse
         {
             public bool TtlIsInteger => true;
             public bool? RecordIsIp4 { get; set; }

@@ -12,9 +12,9 @@ namespace DnsRip
     {
         public class Tools
         {
-            public static ParseResults Parse(string input)
+            public static ParseResult Parse(string input)
             {
-                var result = new ParseResults
+                var result = new ParseResult
                 {
                     Input = input,
                     Evaluated = input.Trim().ToLower()
@@ -56,6 +56,12 @@ namespace DnsRip
             public static bool IsIp6(string query)
             {
                 return Uri.CheckHostName(query) == UriHostNameType.IPv6;
+            }
+
+            public static bool IsIp(string query)
+            {
+                return Uri.CheckHostName(query) == UriHostNameType.IPv4 ||
+                    Uri.CheckHostName(query) == UriHostNameType.IPv6;
             }
 
             public static bool IsDns(string query)

@@ -12,20 +12,20 @@ namespace DnsRip
     {
         public class Resolver
         {
-            public Resolver(IDnsRipRequest request, int retries = 3, int secondsTimeout = 1)
+            public Resolver(IResolveRequest request, int retries = 3, int secondsTimeout = 1)
             {
                 _request = request;
                 _retries = retries;
                 _secondsTimeout = secondsTimeout;
             }
 
-            private readonly IDnsRipRequest _request;
+            private readonly IResolveRequest _request;
             private readonly int _retries;
             private readonly int _secondsTimeout;
 
-            public IEnumerable<DnsRipResponse> Resolve()
+            public IEnumerable<ResolveResponse> Resolve()
             {
-                if (_request.Type == QueryType.PTR && (Tools.IsIp4(_request.Query) || Tools.IsIp6(_request.Query)))
+                if (_request.Type == QueryType.PTR && Tools.IsIp(_request.Query))
                     _request.Query = Tools.ToArpaRequest(_request.Query);
 
                 var question = new Question(_request.Query, _request.Type);
@@ -66,7 +66,7 @@ namespace DnsRip
 
                             foreach (var resp in response1.Answers)
                             {
-                                response.Add(new DnsRipResponse
+                                response.Add(new ResolveResponse
                                 {
                                     Host = resp.Name,
                                     Type = resp.Type,
@@ -330,12 +330,7 @@ namespace DnsRip
     {
         public Request(Question question)
         {
-            Header = new Header1
-            {
-                OpCode = DnsRip.OpCode.Query,
-                QdCount = 1
-            };
-
+            Header = new Header1();
             _question = question;
         }
 
@@ -359,6 +354,10 @@ namespace DnsRip
     {
         public Header1()
         {
+            Id = (ushort)new Random().Next();
+            OpCode = DnsRip.OpCode.Query;
+            QdCount = 1;
+            Rd = true;
         }
 
         public Header1(RecordReader rr)

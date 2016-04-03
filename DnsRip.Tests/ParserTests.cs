@@ -183,21 +183,5 @@ namespace DnsRip.Tests
             Assert.That(result.Parsed, Is.EqualTo(parseTest.Parsed));
             Assert.That(result.Type, Is.EqualTo(parseTest.Type));
         }
-
-        //TODO: Cleanup
-
-        //[Test]
-        //public void HaveSubDomainsIfHostname()
-        //{
-        //    var dnsRip = new DnsRip("domain.com");
-        //    Assert.That(dnsRip.SubDomains, Is.All.EndsWith("."));
-        //}
-
-        //[Test]
-        //public void NotHaveSubDomainsIfIp()
-        //{
-        //    var dnsRip = new DnsRip("192.168.10.1");
-        //    Assert.That(dnsRip.SubDomains, Is.Null);
-        //}
     }
 }
