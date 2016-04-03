@@ -29,34 +29,25 @@ namespace DnsRip
                     _request.Query = Tools.ToArpaRequest(_request.Query);
 
                 var question = new Question(_request.Query, _request.Type);
+                var request = new Request(question);
+                var response = new List<ResolveResponse>();
 
-                var request = new Request(question)
+                foreach (var server in _request.Servers)
                 {
-                    Header =
+                    var attempts = 0;
+
+                    while (attempts <= _retries)
                     {
-                        Id = (ushort) new Random().Next(),
-                        Rd = true
-                    }
-                };
+                        attempts++;
 
-                var response = new List<DnsRipResponse>();
-                var responseMessage = new byte[512];
-                var attempts = 0;
-
-                while (attempts <= _retries)
-                {
-                    attempts++;
-
-                    foreach (var server in _request.Servers)
-                    {
                         var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                        socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout,
-                            _secondsTimeout * 1000);
+                        socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, _secondsTimeout * 1000);
 
                         try
                         {
                             socket.SendTo(request.Data, new IPEndPoint(IPAddress.Parse(server), 53));
 
+                            var responseMessage = new byte[512];
                             var intReceived = socket.Receive(responseMessage);
                             var data = new byte[intReceived];
 
@@ -68,6 +59,7 @@ namespace DnsRip
                             {
                                 response.Add(new ResolveResponse
                                 {
+                                    Server = server,
                                     Host = resp.Name,
                                     Type = resp.Type,
                                     Record = resp.Record.ToString(),
@@ -75,7 +67,12 @@ namespace DnsRip
                                 });
                             }
 
-                            return response;
+                            break;
+                        }
+                        catch
+                        {
+                            if (attempts >= 3)
+                                throw;
                         }
                         finally
                         {
@@ -84,7 +81,7 @@ namespace DnsRip
                     }
                 }
 
-                return null;
+                return response;
             }
         }
     }

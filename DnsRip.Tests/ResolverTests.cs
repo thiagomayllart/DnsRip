@@ -20,9 +20,11 @@ namespace DnsRip.Tests
 
             public IEnumerable<string> Servers
             {
-                get { return new[] { "8.8.4.4" }; }
-                set { }
+                get { return _servers ?? new[] { "8.8.4.4" }; }
+                set { _servers = value; }
             }
+
+            private IEnumerable<string> _servers;
         }
 
         public class TestResponse : ResolveResponse
@@ -34,6 +36,7 @@ namespace DnsRip.Tests
             public bool? RecordIsMxRecord { get; set; }
             public bool? RecordIsSoaRecord { get; set; }
             public bool? RecordIsNotEmpty { get; set; }
+            public bool? ServerIsIp { get; set; }
         }
 
         private static IEnumerable<ResolveTest> GetResolveTests()
@@ -257,6 +260,29 @@ namespace DnsRip.Tests
                             RecordIsHostname = true
                         }
                     }
+                },
+                new ResolveTest
+                {
+                    Query = "google.com",
+                    Type = DnsRip.QueryType.A,
+                    Servers = new[] { "8.8.4.4", "208.67.222.222" },
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp4 = true,
+                            ServerIsIp = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "google.com.",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp4 = true,
+                            ServerIsIp = true
+                        }
+                    }
                 }
             };
 
@@ -276,6 +302,7 @@ namespace DnsRip.Tests
 
             foreach (var result in resultSet)
             {
+                Console.WriteLine(result.Server);
                 Console.WriteLine(result.Host);
                 Console.WriteLine(result.Ttl);
                 Console.WriteLine(result.Type);
@@ -305,6 +332,9 @@ namespace DnsRip.Tests
 
                 if (expected.RecordIsNotEmpty.HasValue)
                     Assert.That(!string.IsNullOrEmpty(result.Record), Is.EqualTo(expected.RecordIsNotEmpty));
+
+                if (expected.ServerIsIp.HasValue)
+                    Assert.That(DnsRip.Tools.IsIp4(result.Server), Is.EqualTo(expected.ServerIsIp));
 
                 index++;
             }
