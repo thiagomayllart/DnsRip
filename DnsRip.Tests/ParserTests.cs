@@ -178,10 +178,10 @@ namespace DnsRip.Tests
         [Test, TestCaseSource(nameof(GetParseTests))]
         public void ParseInput(ParseTest parseTest)
         {
-            var dnsRip = new DnsRip.Parser(parseTest.Input);
-            Assert.That(dnsRip.Evaluated, Is.EqualTo(parseTest.Evaluated));
-            Assert.That(dnsRip.Parsed, Is.EqualTo(parseTest.Parsed));
-            Assert.That(dnsRip.Type, Is.EqualTo(parseTest.Type));
+            var result = DnsRip.Tools.Parse(parseTest.Input);
+            Assert.That(result.Evaluated, Is.EqualTo(parseTest.Evaluated));
+            Assert.That(result.Parsed, Is.EqualTo(parseTest.Parsed));
+            Assert.That(result.Type, Is.EqualTo(parseTest.Type));
         }
 
         //TODO: Cleanup

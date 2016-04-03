@@ -286,22 +286,22 @@ namespace DnsRip.Tests
 
                 Assert.That(result.Host, Is.EqualTo(expected.Host));
                 Assert.That(result.Type, Is.EqualTo(expected.Type));
-                Assert.That(DnsRip.Utilities.IsInteger(result.Ttl), Is.EqualTo(expected.TtlIsInteger));
+                Assert.That(DnsRip.Tools.IsInteger(result.Ttl), Is.EqualTo(expected.TtlIsInteger));
 
                 if (expected.RecordIsIp4.HasValue)
-                    Assert.That(DnsRip.Utilities.IsIp4(result.Record), Is.EqualTo(expected.RecordIsIp4));
+                    Assert.That(DnsRip.Tools.IsIp4(result.Record), Is.EqualTo(expected.RecordIsIp4));
 
                 if (expected.RecordIsIp6.HasValue)
-                    Assert.That(DnsRip.Utilities.IsIp6(result.Record), Is.EqualTo(expected.RecordIsIp6));
+                    Assert.That(DnsRip.Tools.IsIp6(result.Record), Is.EqualTo(expected.RecordIsIp6));
 
                 if (expected.RecordIsHostname.HasValue)
-                    Assert.That(DnsRip.Utilities.IsDns(result.Record), Is.EqualTo(expected.RecordIsHostname));
+                    Assert.That(DnsRip.Tools.IsDns(result.Record), Is.EqualTo(expected.RecordIsHostname));
 
                 if (expected.RecordIsMxRecord.HasValue)
-                    Assert.That(DnsRip.Utilities.IsMx(result.Record), Is.EqualTo(expected.RecordIsMxRecord));
+                    Assert.That(DnsRip.Tools.IsMx(result.Record), Is.EqualTo(expected.RecordIsMxRecord));
 
                 if (expected.RecordIsSoaRecord.HasValue)
-                    Assert.That(DnsRip.Utilities.IsSoa(result.Record), Is.EqualTo(expected.RecordIsSoaRecord));
+                    Assert.That(DnsRip.Tools.IsSoa(result.Record), Is.EqualTo(expected.RecordIsSoaRecord));
 
                 if (expected.RecordIsNotEmpty.HasValue)
                     Assert.That(!string.IsNullOrEmpty(result.Record), Is.EqualTo(expected.RecordIsNotEmpty));

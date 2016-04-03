@@ -25,8 +25,8 @@ namespace DnsRip
 
             public IEnumerable<DnsRipResponse> Resolve()
             {
-                if (_request.Type == QueryType.PTR && (Utilities.IsIp4(_request.Query) || Utilities.IsIp6(_request.Query)))
-                    _request.Query = Utilities.ToArpaRequest(_request.Query);
+                if (_request.Type == QueryType.PTR && (Tools.IsIp4(_request.Query) || Tools.IsIp6(_request.Query)))
+                    _request.Query = Tools.ToArpaRequest(_request.Query);
 
                 var question = new Question(_request.Query, _request.Type);
 
@@ -401,12 +401,12 @@ namespace DnsRip
             get
             {
                 var data = new List<byte>();
-                data.AddRange(DnsRip.Utilities.ToNetByteOrder(Id));
-                data.AddRange(DnsRip.Utilities.ToNetByteOrder(Flags));
-                data.AddRange(DnsRip.Utilities.ToNetByteOrder(QdCount));
-                data.AddRange(DnsRip.Utilities.ToNetByteOrder(AnCount));
-                data.AddRange(DnsRip.Utilities.ToNetByteOrder(NsCount));
-                data.AddRange(DnsRip.Utilities.ToNetByteOrder(ArCount));
+                data.AddRange(DnsRip.Tools.ToNetByteOrder(Id));
+                data.AddRange(DnsRip.Tools.ToNetByteOrder(Flags));
+                data.AddRange(DnsRip.Tools.ToNetByteOrder(QdCount));
+                data.AddRange(DnsRip.Tools.ToNetByteOrder(AnCount));
+                data.AddRange(DnsRip.Tools.ToNetByteOrder(NsCount));
+                data.AddRange(DnsRip.Tools.ToNetByteOrder(ArCount));
                 return data.ToArray();
             }
         }
@@ -466,7 +466,7 @@ namespace DnsRip
             get { return _query; }
             set
             {
-                _query = DnsRip.Utilities.ToNameFormat(value);
+                _query = DnsRip.Tools.ToNameFormat(value);
             }
         }
 
@@ -476,15 +476,15 @@ namespace DnsRip
             {
                 var data = new List<byte>();
                 data.AddRange(WriteName(Query));
-                data.AddRange(DnsRip.Utilities.ToNetByteOrder((ushort)Type));
-                data.AddRange(DnsRip.Utilities.ToNetByteOrder((ushort)Class));
+                data.AddRange(DnsRip.Tools.ToNetByteOrder((ushort)Type));
+                data.AddRange(DnsRip.Tools.ToNetByteOrder((ushort)Class));
                 return data.ToArray();
             }
         }
 
         private static IEnumerable<byte> WriteName(string src)
         {
-            src = DnsRip.Utilities.ToNameFormat(src);
+            src = DnsRip.Tools.ToNameFormat(src);
 
             if (src == ".")
                 return new byte[1];
