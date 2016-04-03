@@ -8,6 +8,7 @@ namespace DnsRip.Models
         public DnsQuestion(string query, DnsRip.QueryType type)
         {
             Query = query;
+
             _type = type;
             _class = DnsRip.QueryClass.IN;
         }
@@ -15,6 +16,7 @@ namespace DnsRip.Models
         public DnsQuestion(RecordReader rr)
         {
             Query = rr.ReadDomainName();
+
             _type = (DnsRip.QueryType)rr.ReadUInt16();
             _class = (DnsRip.QueryClass)rr.ReadUInt16();
         }

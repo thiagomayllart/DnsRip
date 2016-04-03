@@ -29,7 +29,8 @@ namespace DnsRip
                     _request.Query = Tools.ToArpaRequest(_request.Query);
 
                 var question = new DnsQuestion(_request.Query, _request.Type);
-                var request = new Request(question);
+                var requestHeader = new Header1();
+                var request = new DnsRequest(question, requestHeader);
                 var resolved = new List<ResolveResponse>();
 
                 foreach (var server in _request.Servers)
@@ -269,30 +270,6 @@ namespace DnsRip
 
                 default:
                     return new RecordUnknown(this);
-            }
-        }
-    }
-
-    public class Request
-    {
-        public Request(DnsQuestion question)
-        {
-            Header = new Header1();
-            _question = question;
-        }
-
-        public Header1 Header;
-
-        private readonly DnsQuestion _question;
-
-        public byte[] Data
-        {
-            get
-            {
-                var data = new List<byte>();
-                data.AddRange(Header.Data);
-                data.AddRange(_question.Data);
-                return data.ToArray();
             }
         }
     }
