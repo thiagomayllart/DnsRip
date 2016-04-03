@@ -47,13 +47,13 @@ namespace DnsRip
                         {
                             socket.SendTo(request.Data, new IPEndPoint(IPAddress.Parse(server), 53));
 
-                            var responseMessage = new byte[512];
-                            var intReceived = socket.Receive(responseMessage);
-                            var data = new byte[intReceived];
+                            var buffer = new byte[512];
+                            var received = socket.Receive(buffer);
+                            var data = new byte[received];
 
-                            Array.Copy(responseMessage, data, intReceived);
+                            Array.Copy(buffer, data, received);
 
-                            var response1 = new Response1(new IPEndPoint(IPAddress.Parse(server), 53), data);
+                            var response1 = new DnsResponse(data);
 
                             foreach (var resp in response1.Answers)
                             {
@@ -84,56 +84,6 @@ namespace DnsRip
                 return response;
             }
         }
-    }
-
-    public class Response1
-    {
-        public Response1(IPEndPoint ipEndPoint, byte[] data)
-        {
-            Error = "";
-            Server = ipEndPoint;
-            TimeStamp = DateTime.Now;
-            MessageSize = data.Length;
-
-            var rr = new RecordReader(data);
-
-            Questions = new List<Question>();
-            Answers = new List<AnswerRr>();
-            Authorities = new List<AuthorityRr>();
-            Additionals = new List<AdditionalRr>();
-
-            Header = new Header1(rr);
-
-            for (var intI = 0; intI < Header.QdCount; intI++)
-            {
-                Questions.Add(new Question(rr));
-            }
-
-            for (var intI = 0; intI < Header.AnCount; intI++)
-            {
-                Answers.Add(new AnswerRr(rr));
-            }
-
-            for (var intI = 0; intI < Header.NsCount; intI++)
-            {
-                Authorities.Add(new AuthorityRr(rr));
-            }
-
-            for (var intI = 0; intI < Header.ArCount; intI++)
-            {
-                Additionals.Add(new AdditionalRr(rr));
-            }
-        }
-
-        public string Error;
-        public IPEndPoint Server;
-        public DateTime TimeStamp;
-        public int MessageSize;
-        public List<Question> Questions;
-        public List<AnswerRr> Answers;
-        public List<AuthorityRr> Authorities;
-        public List<AdditionalRr> Additionals;
-        public Header1 Header;
     }
 
     public class AnswerRr : Rr
