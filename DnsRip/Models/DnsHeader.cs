@@ -1,3 +1,4 @@
+using DnsRip.Utilites;
 using System;
 using System.Collections.Generic;
 
@@ -14,15 +15,15 @@ namespace DnsRip.Models
             Recursive = true;
         }
 
-        public DnsHeader(RecordReader rr)
+        public DnsHeader(RecordHelper helper)
         {
-            _id = rr.ReadUInt16();
-            _flags = rr.ReadUInt16();
+            _id = helper.ReadUInt16();
+            _flags = helper.ReadUInt16();
 
-            QdCount = rr.ReadUInt16();
-            AnCount = rr.ReadUInt16();
-            NsCount = rr.ReadUInt16();
-            ArCount = rr.ReadUInt16();
+            QdCount = helper.ReadUInt16();
+            AnCount = helper.ReadUInt16();
+            NsCount = helper.ReadUInt16();
+            ArCount = helper.ReadUInt16();
         }
 
         public ushort QdCount;

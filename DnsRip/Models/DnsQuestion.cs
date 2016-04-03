@@ -1,3 +1,4 @@
+using DnsRip.Utilites;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,12 +14,12 @@ namespace DnsRip.Models
             _class = DnsRip.QueryClass.IN;
         }
 
-        public DnsQuestion(RecordReader rr)
+        public DnsQuestion(RecordHelper helper)
         {
-            Query = rr.ReadDomainName();
+            Query = helper.ReadDomainName();
 
-            _type = (DnsRip.QueryType)rr.ReadUInt16();
-            _class = (DnsRip.QueryClass)rr.ReadUInt16();
+            _type = (DnsRip.QueryType)helper.ReadUInt16();
+            _class = (DnsRip.QueryClass)helper.ReadUInt16();
         }
 
         public byte[] Data

@@ -1,3 +1,4 @@
+using DnsRip.Utilites;
 using System;
 using System.Collections.Generic;
 
@@ -7,38 +8,38 @@ namespace DnsRip.Models
     {
         public DnsResponse(byte[] data)
         {
-            var recordReader = new RecordReader(data);
-            var header = new DnsHeader(recordReader);
+            var record = new RecordHelper(data);
+            var header = new DnsHeader(record);
 
             Questions = new List<DnsQuestion>();
-            Answers = new List<AnswerRr>();
-            Authorities = new List<AuthorityRr>();
-            Additionals = new List<AdditionalRr>();
+            Answers = new List<AnswerReader>();
+            Authorities = new List<AuthorityReader>();
+            Additionals = new List<AdditionalReader>();
 
             for (var intI = 0; intI < header.QdCount; intI++)
             {
-                Questions.Add(new DnsQuestion(recordReader));
+                Questions.Add(new DnsQuestion(record));
             }
 
             for (var intI = 0; intI < header.AnCount; intI++)
             {
-                Answers.Add(new AnswerRr(recordReader));
+                Answers.Add(new AnswerReader(record));
             }
 
             for (var intI = 0; intI < header.NsCount; intI++)
             {
-                Authorities.Add(new AuthorityRr(recordReader));
+                Authorities.Add(new AuthorityReader(record));
             }
 
             for (var intI = 0; intI < header.ArCount; intI++)
             {
-                Additionals.Add(new AdditionalRr(recordReader));
+                Additionals.Add(new AdditionalReader(record));
             }
         }
 
         public List<DnsQuestion> Questions;
-        public List<AnswerRr> Answers;
-        public List<AuthorityRr> Authorities;
-        public List<AdditionalRr> Additionals;
+        public List<AnswerReader> Answers;
+        public List<AuthorityReader> Authorities;
+        public List<AdditionalReader> Additionals;
     }
 }

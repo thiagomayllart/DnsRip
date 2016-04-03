@@ -1,5 +1,6 @@
 using DnsRip.Interfaces;
 using DnsRip.Models;
+using DnsRip.Utilites;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -28,8 +29,8 @@ namespace DnsRip
                 if (_request.Type == QueryType.PTR && Tools.IsIp(_request.Query))
                     _request.Query = Tools.ToArpaRequest(_request.Query);
 
-                var question = new DnsQuestion(_request.Query, _request.Type);
                 var header = new DnsHeader();
+                var question = new DnsQuestion(_request.Query, _request.Type);
                 var request = new DnsRequest(question, header);
                 var resolved = new List<ResolveResponse>();
 
@@ -87,198 +88,16 @@ namespace DnsRip
         }
     }
 
-    public class AnswerRr : Rr
-    {
-        public AnswerRr(RecordReader br)
-            : base(br)
-        {
-        }
-    }
-
-    public class AuthorityRr : Rr
-    {
-        public AuthorityRr(RecordReader br)
-            : base(br)
-        {
-        }
-    }
-
-    public class AdditionalRr : Rr
-    {
-        public AdditionalRr(RecordReader br)
-            : base(br)
-        {
-        }
-    }
-
-    public class Rr
-    {
-        public Rr(RecordReader rr)
-        {
-            TimeLived = 0;
-            Name = rr.ReadDomainName();
-            Type = (DnsRip.QueryType)rr.ReadUInt16();
-            Class = (DnsRip.QueryClass)rr.ReadUInt16();
-            Ttl = rr.ReadUInt32();
-            RdLength = rr.ReadUInt16();
-            Record = rr.ReadRecord(Type, RdLength);
-            Record.Rr = this;
-        }
-
-        public int TimeLived;
-        public string Name;
-        public DnsRip.QueryType Type;
-        public DnsRip.QueryClass Class;
-        public ushort RdLength;
-        public Record Record;
-
-        private uint _ttl;
-
-        public uint Ttl
-        {
-            get { return (uint)Math.Max(0, _ttl - TimeLived); }
-            set { _ttl = value; }
-        }
-    }
-
     public abstract class Record
     {
-        public Rr Rr;
-    }
-
-    public class RecordReader
-    {
-        public RecordReader(byte[] data)
-        {
-            _data = data;
-            Position = 0;
-        }
-
-        public RecordReader(byte[] data, int position)
-        {
-            _data = data;
-            Position = position;
-        }
-
-        private readonly byte[] _data;
-
-        public int Position { get; set; }
-
-        public string ReadDomainName()
-        {
-            var name = new StringBuilder();
-            int length;
-
-            while ((length = ReadByte()) != 0)
-            {
-                if ((length & 0xc0) == 0xc0)
-                {
-                    var newRecordReader = new RecordReader(_data, (length & 0x3f) << 8 | ReadByte());
-
-                    name.Append(newRecordReader.ReadDomainName());
-
-                    return name.ToString();
-                }
-
-                while (length > 0)
-                {
-                    name.Append(ReadChar());
-                    length--;
-                }
-
-                name.Append('.');
-            }
-
-            return name.Length == 0 ? "." : name.ToString();
-        }
-
-        public string ReadString()
-        {
-            var length = ReadByte();
-            var str = new StringBuilder();
-
-            for (var intI = 0; intI < length; intI++)
-                str.Append(ReadChar());
-
-            return str.ToString();
-        }
-
-        public byte ReadByte()
-        {
-            return Position >= _data.Length ? (byte)0 : _data[Position++];
-        }
-
-        public byte[] ReadBytes(int intLength)
-        {
-            var list = new byte[intLength];
-
-            for (var intI = 0; intI < intLength; intI++)
-                list[intI] = ReadByte();
-
-            return list;
-        }
-
-        public char ReadChar()
-        {
-            return (char)ReadByte();
-        }
-
-        public ushort ReadUInt16()
-        {
-            return (ushort)(ReadByte() << 8 | ReadByte());
-        }
-
-        public ushort ReadUInt16(int offset)
-        {
-            Position += offset;
-
-            return ReadUInt16();
-        }
-
-        public uint ReadUInt32()
-        {
-            return (uint)(ReadUInt16() << 16 | ReadUInt16());
-        }
-
-        public Record ReadRecord(DnsRip.QueryType type, int length)
-        {
-            switch (type)
-            {
-                case DnsRip.QueryType.A:
-                    return new RecordA(this);
-
-                case DnsRip.QueryType.CNAME:
-                    return new RecordCName(this);
-
-                case DnsRip.QueryType.AAAA:
-                    return new RecordAaaa(this);
-
-                case DnsRip.QueryType.NS:
-                    return new RecordNs(this);
-
-                case DnsRip.QueryType.MX:
-                    return new RecordMx(this);
-
-                case DnsRip.QueryType.SOA:
-                    return new RecordSoa(this);
-
-                case DnsRip.QueryType.TXT:
-                    return new RecordTxt(this, length);
-
-                case DnsRip.QueryType.PTR:
-                    return new RecordPtr(this);
-
-                default:
-                    return new RecordUnknown(this);
-            }
-        }
+        public RecordReader Rr;
     }
 
     public class RecordA : Record
     {
-        public RecordA(RecordReader recordReader)
+        public RecordA(RecordHelper helper)
         {
-            Address = new IPAddress(recordReader.ReadBytes(4));
+            Address = new IPAddress(helper.ReadBytes(4));
         }
 
         public IPAddress Address;
@@ -293,9 +112,9 @@ namespace DnsRip
     {
         public string CName;
 
-        public RecordCName(RecordReader rr)
+        public RecordCName(RecordHelper helper)
         {
-            CName = rr.ReadDomainName();
+            CName = helper.ReadDomainName();
         }
 
         public override string ToString()
@@ -308,17 +127,17 @@ namespace DnsRip
     {
         public IPAddress Address;
 
-        public RecordAaaa(RecordReader rr)
+        public RecordAaaa(RecordHelper helper)
         {
             IPAddress.TryParse(
-                $"{rr.ReadUInt16():x}:" +
-                $"{rr.ReadUInt16():x}:" +
-                $"{rr.ReadUInt16():x}:" +
-                $"{rr.ReadUInt16():x}:" +
-                $"{rr.ReadUInt16():x}:" +
-                $"{rr.ReadUInt16():x}:" +
-                $"{rr.ReadUInt16():x}:" +
-                $"{rr.ReadUInt16():x}",
+                $"{helper.ReadUInt16():x}:" +
+                $"{helper.ReadUInt16():x}:" +
+                $"{helper.ReadUInt16():x}:" +
+                $"{helper.ReadUInt16():x}:" +
+                $"{helper.ReadUInt16():x}:" +
+                $"{helper.ReadUInt16():x}:" +
+                $"{helper.ReadUInt16():x}:" +
+                $"{helper.ReadUInt16():x}",
                 out Address);
         }
 
@@ -332,9 +151,9 @@ namespace DnsRip
     {
         public string NsDName;
 
-        public RecordNs(RecordReader rr)
+        public RecordNs(RecordHelper helper)
         {
-            NsDName = rr.ReadDomainName();
+            NsDName = helper.ReadDomainName();
         }
 
         public override string ToString()
@@ -348,10 +167,10 @@ namespace DnsRip
         public ushort Preference;
         public string Exchange;
 
-        public RecordMx(RecordReader rr)
+        public RecordMx(RecordHelper helper)
         {
-            Preference = rr.ReadUInt16();
-            Exchange = rr.ReadDomainName();
+            Preference = helper.ReadUInt16();
+            Exchange = helper.ReadDomainName();
         }
 
         public override string ToString()
@@ -370,15 +189,15 @@ namespace DnsRip
         public uint Expire;
         public uint Minimum;
 
-        public RecordSoa(RecordReader rr)
+        public RecordSoa(RecordHelper helper)
         {
-            MName = rr.ReadDomainName();
-            RName = rr.ReadDomainName();
-            Serial = rr.ReadUInt32();
-            Refresh = rr.ReadUInt32();
-            Retry = rr.ReadUInt32();
-            Expire = rr.ReadUInt32();
-            Minimum = rr.ReadUInt32();
+            MName = helper.ReadDomainName();
+            RName = helper.ReadDomainName();
+            Serial = helper.ReadUInt32();
+            Refresh = helper.ReadUInt32();
+            Retry = helper.ReadUInt32();
+            Expire = helper.ReadUInt32();
+            Minimum = helper.ReadUInt32();
         }
 
         public override string ToString()
@@ -391,14 +210,14 @@ namespace DnsRip
     {
         public List<string> Txt;
 
-        public RecordTxt(RecordReader rr, int length)
+        public RecordTxt(RecordHelper helper, int length)
         {
-            var pos = rr.Position;
+            var pos = helper.Position;
 
             Txt = new List<string>();
 
-            while (rr.Position - pos < length)
-                Txt.Add(rr.ReadString());
+            while (helper.Position - pos < length)
+                Txt.Add(helper.ReadString());
         }
 
         public override string ToString()
@@ -416,9 +235,9 @@ namespace DnsRip
     {
         public string PtrDName;
 
-        public RecordPtr(RecordReader rr)
+        public RecordPtr(RecordHelper helper)
         {
-            PtrDName = rr.ReadDomainName();
+            PtrDName = helper.ReadDomainName();
         }
 
         public override string ToString()
@@ -429,10 +248,10 @@ namespace DnsRip
 
     public class RecordUnknown : Record
     {
-        public RecordUnknown(RecordReader rr)
+        public RecordUnknown(RecordHelper helper)
         {
-            var rdLength = rr.ReadUInt16(-2);
-            RData = rr.ReadBytes(rdLength);
+            var rdLength = helper.ReadUInt16(-2);
+            RData = helper.ReadBytes(rdLength);
         }
 
         public byte[] RData;
