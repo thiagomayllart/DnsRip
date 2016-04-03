@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\DnsHeader.cs" />
     <Compile Include="Models\ResolveRequest.cs" />
     <Compile Include="Models\ResolveResponse.cs" />
     <Compile Include="Enums.cs" />

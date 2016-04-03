@@ -4,13 +4,13 @@ namespace DnsRip.Models
 {
     public class DnsRequest
     {
-        public DnsRequest(DnsQuestion question, Header1 header)
+        public DnsRequest(DnsQuestion question, DnsHeader header)
         {
             _header = header;
             _question = question;
         }
 
-        private readonly Header1 _header;
+        private readonly DnsHeader _header;
         private readonly DnsQuestion _question;
 
         public byte[] Data

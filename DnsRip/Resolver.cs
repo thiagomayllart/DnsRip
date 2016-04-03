@@ -29,8 +29,8 @@ namespace DnsRip
                     _request.Query = Tools.ToArpaRequest(_request.Query);
 
                 var question = new DnsQuestion(_request.Query, _request.Type);
-                var requestHeader = new Header1();
-                var request = new DnsRequest(question, requestHeader);
+                var header = new DnsHeader();
+                var request = new DnsRequest(question, header);
                 var resolved = new List<ResolveResponse>();
 
                 foreach (var server in _request.Servers)
@@ -271,95 +271,6 @@ namespace DnsRip
                 default:
                     return new RecordUnknown(this);
             }
-        }
-    }
-
-    public class Header1
-    {
-        public Header1()
-        {
-            Id = (ushort)new Random().Next();
-            OpCode = DnsRip.OpCode.Query;
-            QdCount = 1;
-            Rd = true;
-        }
-
-        public Header1(RecordReader rr)
-        {
-            Id = rr.ReadUInt16();
-            Flags = rr.ReadUInt16();
-            QdCount = rr.ReadUInt16();
-            AnCount = rr.ReadUInt16();
-            NsCount = rr.ReadUInt16();
-            ArCount = rr.ReadUInt16();
-        }
-
-        public ushort Id;
-        public ushort Flags;
-        public ushort QdCount;
-        public ushort AnCount;
-        public ushort NsCount;
-        public ushort ArCount;
-
-        public DnsRip.OpCode OpCode
-        {
-            get { return (DnsRip.OpCode)GetBits(Flags, 11, 4); }
-            set { Flags = SetBits(Flags, 11, 4, (ushort)value); }
-        }
-
-        public bool Rd
-        {
-            get
-            {
-                return GetBits(Flags, 8, 1) == 1;
-            }
-            set
-            {
-                Flags = SetBits(Flags, 8, 1, value);
-            }
-        }
-
-        public byte[] Data
-        {
-            get
-            {
-                var data = new List<byte>();
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(Id));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(Flags));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(QdCount));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(AnCount));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(NsCount));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(ArCount));
-                return data.ToArray();
-            }
-        }
-
-        private static ushort GetBits(ushort oldValue, int position, int length)
-        {
-            if (length <= 0 || position >= 16)
-                return 0;
-
-            var mask = (2 << (length - 1)) - 1;
-
-            return (ushort)((oldValue >> position) & mask);
-        }
-
-        private static ushort SetBits(ushort oldValue, int position, int length, ushort newValue)
-        {
-            if (length <= 0 || position >= 16)
-                return oldValue;
-
-            var mask = (2 << (length - 1)) - 1;
-
-            oldValue &= (ushort)~(mask << position);
-            oldValue |= (ushort)((newValue & mask) << position);
-
-            return oldValue;
-        }
-
-        private static ushort SetBits(ushort oldValue, int position, int length, bool blnValue)
-        {
-            return SetBits(oldValue, position, length, blnValue ? (ushort)1 : (ushort)0);
         }
     }
 
