@@ -11,7 +11,7 @@ namespace DnsRip.Models
             Query = query;
 
             _type = type;
-            _class = DnsRip.QueryClass.IN;
+            _class = 1;
         }
 
         public DnsQuestion(RecordHelper helper)
@@ -19,7 +19,7 @@ namespace DnsRip.Models
             Query = helper.ReadDomainName();
 
             _type = (DnsRip.QueryType)helper.ReadUInt16();
-            _class = (DnsRip.QueryClass)helper.ReadUInt16();
+            _class = helper.ReadUInt16();
         }
 
         public byte[] Data
@@ -42,7 +42,7 @@ namespace DnsRip.Models
 
         private string _query;
         private readonly DnsRip.QueryType _type;
-        private readonly DnsRip.QueryClass _class;
+        private readonly int _class;
 
         private IEnumerable<byte> QueryToBytes()
         {

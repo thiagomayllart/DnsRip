@@ -22,10 +22,5 @@ namespace DnsRip
             TXT = 16,
             PTR = 12
         }
-
-        public enum QueryClass
-        {
-            IN = 1
-        }
     }
 }
