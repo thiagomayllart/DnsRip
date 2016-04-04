@@ -69,7 +69,7 @@ namespace DnsRip
 
                             break;
                         }
-                        catch
+                        catch (SocketException)
                         {
                             if (attempts >= 3)
                                 throw;
