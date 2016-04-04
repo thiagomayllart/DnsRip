@@ -23,11 +23,6 @@ namespace DnsRip
             PTR = 12
         }
 
-        public enum OpCode
-        {
-            Query = 0
-        }
-
         public enum QueryClass
         {
             IN = 1

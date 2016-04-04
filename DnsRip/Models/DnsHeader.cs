@@ -10,7 +10,7 @@ namespace DnsRip.Models
         {
             _id = (ushort)new Random().Next();
 
-            OpCode = DnsRip.OpCode.Query;
+            OpCode = 0;
             QdCount = 1;
             Recursive = true;
         }
@@ -31,9 +31,9 @@ namespace DnsRip.Models
         public ushort NsCount;
         public ushort ArCount;
 
-        public DnsRip.OpCode OpCode
+        public int OpCode
         {
-            get { return (DnsRip.OpCode)GetBits(_flags, 11, 4); }
+            get { return GetBits(_flags, 11, 4); }
             set { _flags = SetBits(_flags, 11, 4, (ushort)value); }
         }
 
