@@ -1,3 +1,4 @@
+using DnsRip.Models;
 using System.Text;
 
 namespace DnsRip.Utilites
@@ -125,7 +126,7 @@ namespace DnsRip.Utilites
                     return new RecordPtr(this);
 
                 default:
-                    return new RecordUnknown(this);
+                    return new RecordUnknown();
             }
         }
     }

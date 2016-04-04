@@ -1,3 +1,4 @@
+using DnsRip.Models;
 using System;
 
 namespace DnsRip.Utilites
@@ -11,7 +12,6 @@ namespace DnsRip.Utilites
             Class = (DnsRip.QueryClass)helper.ReadUInt16();
             Ttl = helper.ReadUInt32();
             Record = helper.ReadRecord(Type, helper.ReadUInt16());
-            Record.Rr = this;
         }
 
         public string Name;
