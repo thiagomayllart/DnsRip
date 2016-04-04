@@ -178,7 +178,9 @@ namespace DnsRip.Tests
         [Test, TestCaseSource(nameof(GetParseTests))]
         public void ParseInput(ParseTest parseTest)
         {
-            var result = DnsRip.Tools.Parse(parseTest.Input);
+            var parser = new DnsRip.Parser();
+            var result = parser.Parse(parseTest.Input);
+
             Assert.That(result.Evaluated, Is.EqualTo(parseTest.Evaluated));
             Assert.That(result.Parsed, Is.EqualTo(parseTest.Parsed));
             Assert.That(result.Type, Is.EqualTo(parseTest.Type));
