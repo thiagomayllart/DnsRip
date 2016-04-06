@@ -295,8 +295,8 @@ namespace DnsRip.Tests
         [Test, TestCaseSource(nameof(GetResolveTests))]
         public void Resolve(ResolveTest resolveTest)
         {
-            var dnsRip = new DnsRip.Resolver(resolveTest);
-            var resultSet = dnsRip.Resolve();
+            var dnsRip = new DnsRip.Resolver();
+            var resultSet = dnsRip.Resolve(resolveTest);
             var expectedSet = resolveTest.Expected.ToList();
             var index = 0;
 

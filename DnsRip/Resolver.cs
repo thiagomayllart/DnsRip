@@ -11,28 +11,26 @@ namespace DnsRip
     {
         public class Resolver
         {
-            public Resolver(IResolveRequest request, int retries = 3, int secondsTimeout = 1)
+            public Resolver(int retries = 3, int secondsTimeout = 1)
             {
-                _request = request;
                 _retries = retries;
                 _secondsTimeout = secondsTimeout;
             }
 
-            private readonly IResolveRequest _request;
             private readonly int _retries;
             private readonly int _secondsTimeout;
 
-            public IEnumerable<ResolveResponse> Resolve()
+            public IEnumerable<ResolveResponse> Resolve(IResolveRequest request)
             {
-                if (_request.Type == QueryType.PTR && Tools.IsIp(_request.Query))
-                    _request.Query = Tools.ToArpaRequest(_request.Query);
+                if (request.Type == QueryType.PTR && Tools.IsIp(request.Query))
+                    request.Query = Tools.ToArpaRequest(request.Query);
 
-                var header = new DnsHeader();
-                var question = new DnsQuestion(_request.Query, _request.Type);
-                var request = new DnsRequest(question, header);
+                var dnsHeader = new DnsHeader();
+                var dnsQuestion = new DnsQuestion(request.Query, request.Type);
+                var dnsRequest = new DnsRequest(dnsQuestion, dnsHeader);
                 var resolved = new List<ResolveResponse>();
 
-                foreach (var server in _request.Servers)
+                foreach (var server in request.Servers)
                 {
                     var attempts = 0;
 
@@ -45,7 +43,7 @@ namespace DnsRip
 
                         try
                         {
-                            socket.SendTo(request.Data, new IPEndPoint(IPAddress.Parse(server), 53));
+                            socket.SendTo(dnsRequest.Data, new IPEndPoint(IPAddress.Parse(server), 53));
 
                             var buffer = new byte[512];
                             var received = socket.Receive(buffer);
