@@ -50,6 +50,7 @@
     <Compile Include="Models\RecordTxt.cs" />
     <Compile Include="Models\RecordPtr.cs" />
     <Compile Include="Models\RecordUnknown.cs" />
+    <Compile Include="Models\ResolveOptions.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Utilites\AdditionalReader.cs" />
     <Compile Include="Utilites\AnswerReader.cs" />

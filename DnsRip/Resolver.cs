@@ -10,31 +10,29 @@ namespace DnsRip
     {
         public class Resolver
         {
-            public Resolver(int retries = 3, int secondsTimeout = 1)
+            public Resolver(ResolveOptions options)
             {
-                _retries = retries;
-                _secondsTimeout = secondsTimeout;
+                _options = options;
             }
 
-            private readonly int _retries;
-            private readonly int _secondsTimeout;
+            private readonly ResolveOptions _options;
 
             public IEnumerable<ResolveResponse> Resolve(IResolveRequest request)
             {
                 var dnsRequest = GetDnsRequest(request);
                 var resolved = new List<ResolveResponse>();
 
-                foreach (var server in request.Servers)
+                foreach (var server in _options.Servers)
                 {
                     var attempts = 0;
 
-                    while (attempts <= _retries)
+                    while (attempts <= _options.Retries)
                     {
                         attempts++;
 
                         try
                         {
-                            using (var socket = new SocketHelper(dnsRequest, server, _secondsTimeout))
+                            using (var socket = new SocketHelper(dnsRequest, server, _options.Timeout))
                             {
                                 var data = socket.Send();
                                 var dnsResponse = new DnsResponse(data);
