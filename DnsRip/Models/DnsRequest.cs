@@ -4,7 +4,7 @@ namespace DnsRip.Models
 {
     public class DnsRequest
     {
-        public DnsRequest(DnsQuestion question, DnsHeader header)
+        public DnsRequest(DnsHeader header, DnsQuestion question)
         {
             _header = header;
             _question = question;

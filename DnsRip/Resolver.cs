@@ -1,8 +1,7 @@
 using DnsRip.Interfaces;
 using DnsRip.Models;
-using System;
+using DnsRip.Utilites;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
 
 namespace DnsRip
@@ -22,12 +21,7 @@ namespace DnsRip
 
             public IEnumerable<ResolveResponse> Resolve(IResolveRequest request)
             {
-                if (request.Type == QueryType.PTR && Tools.IsIp(request.Query))
-                    request.Query = Tools.ToArpaRequest(request.Query);
-
-                var dnsHeader = new DnsHeader();
-                var dnsQuestion = new DnsQuestion(request.Query, request.Type);
-                var dnsRequest = new DnsRequest(dnsQuestion, dnsHeader);
+                var dnsRequest = GetDnsRequest(request);
                 var resolved = new List<ResolveResponse>();
 
                 foreach (var server in request.Servers)
@@ -38,31 +32,24 @@ namespace DnsRip
                     {
                         attempts++;
 
-                        var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                        socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, _secondsTimeout * 1000);
-
                         try
                         {
-                            socket.SendTo(dnsRequest.Data, new IPEndPoint(IPAddress.Parse(server), 53));
-
-                            var buffer = new byte[512];
-                            var received = socket.Receive(buffer);
-                            var data = new byte[received];
-
-                            Array.Copy(buffer, data, received);
-
-                            var dnsResponse = new DnsResponse(data);
-
-                            foreach (var resp in dnsResponse.Answers)
+                            using (var socket = new SocketHelper(dnsRequest, server, _secondsTimeout))
                             {
-                                resolved.Add(new ResolveResponse
+                                var data = socket.Send();
+                                var dnsResponse = new DnsResponse(data);
+
+                                foreach (var resp in dnsResponse.Answers)
                                 {
-                                    Server = server,
-                                    Host = resp.Name,
-                                    Type = resp.Type,
-                                    Record = resp.Record.ToString(),
-                                    Ttl = resp.Ttl
-                                });
+                                    resolved.Add(new ResolveResponse
+                                    {
+                                        Server = server,
+                                        Host = resp.Name,
+                                        Type = resp.Type,
+                                        Record = resp.Record.ToString(),
+                                        Ttl = resp.Ttl
+                                    });
+                                }
                             }
 
                             break;
@@ -72,14 +59,21 @@ namespace DnsRip
                             if (attempts >= 3)
                                 throw;
                         }
-                        finally
-                        {
-                            socket.Close();
-                        }
                     }
                 }
 
                 return resolved;
+            }
+
+            private static DnsRequest GetDnsRequest(IResolveRequest request)
+            {
+                if (request.Type == QueryType.PTR && Tools.IsIp(request.Query))
+                    request.Query = Tools.ToArpaRequest(request.Query);
+
+                var dnsHeader = new DnsHeader();
+                var dnsQuestion = new DnsQuestion(request.Query, request.Type);
+
+                return new DnsRequest(dnsHeader, dnsQuestion);
             }
         }
     }
