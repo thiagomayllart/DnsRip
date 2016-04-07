@@ -1,3 +1,4 @@
+using DnsRip.Extensions;
 using DnsRip.Utilites;
 using System;
 using System.Collections.Generic;
@@ -48,12 +49,14 @@ namespace DnsRip.Models
             get
             {
                 var data = new List<byte>();
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(_id));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(_flags));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(QdCount));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(AnCount));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(NsCount));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder(ArCount));
+
+                data.AddRange(_id.ToNetByteOrder());
+                data.AddRange(_flags.ToNetByteOrder());
+                data.AddRange(QdCount.ToNetByteOrder());
+                data.AddRange(AnCount.ToNetByteOrder());
+                data.AddRange(NsCount.ToNetByteOrder());
+                data.AddRange(ArCount.ToNetByteOrder());
+
                 return data.ToArray();
             }
         }

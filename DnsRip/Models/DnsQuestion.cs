@@ -1,3 +1,4 @@
+using DnsRip.Extensions;
 using DnsRip.Utilites;
 using System.Collections.Generic;
 using System.Text;
@@ -27,9 +28,11 @@ namespace DnsRip.Models
             get
             {
                 var data = new List<byte>();
+
                 data.AddRange(QueryToBytes());
-                data.AddRange(DnsRip.Tools.ToNetByteOrder((ushort)_type));
-                data.AddRange(DnsRip.Tools.ToNetByteOrder((ushort)_class));
+                data.AddRange(_type.ToNetByteOrder());
+                data.AddRange(_class.ToNetByteOrder());
+
                 return data.ToArray();
             }
         }
@@ -37,7 +40,7 @@ namespace DnsRip.Models
         private string Query
         {
             get { return _query; }
-            set { _query = DnsRip.Tools.ToNameFormat(value); }
+            set { _query = value.ToNameFormat(); }
         }
 
         private string _query;
@@ -46,7 +49,7 @@ namespace DnsRip.Models
 
         private IEnumerable<byte> QueryToBytes()
         {
-            var query = DnsRip.Tools.ToNameFormat(Query);
+            var query = Query.ToNameFormat();
 
             if (query == ".")
                 return new byte[1];

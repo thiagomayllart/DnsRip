@@ -1,3 +1,4 @@
+using DnsRip.Extensions;
 using DnsRip.Interfaces;
 using DnsRip.Models;
 using DnsRip.Utilites;
@@ -66,7 +67,7 @@ namespace DnsRip
             private static DnsRequest GetDnsRequest(IResolveRequest request)
             {
                 if (request.Type == QueryType.PTR && Tools.IsIp(request.Query))
-                    request.Query = Tools.ToArpaRequest(request.Query);
+                    request.Query = request.Query.ToArpaRequest();
 
                 var dnsHeader = new DnsHeader();
                 var dnsQuestion = new DnsQuestion(request.Query, request.Type);

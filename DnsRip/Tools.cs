@@ -71,56 +71,6 @@ namespace DnsRip
 
                 return true;
             }
-
-            internal static IEnumerable<byte> ToNetByteOrder(ushort value)
-            {
-                return BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)value));
-            }
-
-            internal static string ToNameFormat(string query)
-            {
-                if (!query.EndsWith("."))
-                    query += ".";
-
-                return query;
-            }
-
-            internal static string ToArpaRequest(string query)
-            {
-                IPAddress ip;
-
-                if (IPAddress.TryParse(query, out ip))
-                {
-                    var result = new StringBuilder();
-
-                    switch (ip.AddressFamily)
-                    {
-                        case AddressFamily.InterNetwork:
-                            {
-                                result.Append("in-addr.arpa.");
-
-                                foreach (var b in ip.GetAddressBytes())
-                                    result.Insert(0, $"{b}.");
-
-                                return result.ToString();
-                            }
-                        case AddressFamily.InterNetworkV6:
-                            {
-                                result.Append("ip6.arpa.");
-
-                                foreach (var b in ip.GetAddressBytes())
-                                {
-                                    result.Insert(0, $"{(b >> 4) & 0xf:x}.");
-                                    result.Insert(0, $"{(b >> 0) & 0xf:x}.");
-                                }
-
-                                return result.ToString();
-                            }
-                    }
-                }
-
-                return query;
-            }
         }
     }
 }
