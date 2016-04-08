@@ -69,7 +69,7 @@
     <Compile Include="Resolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\DnsResponse.cs" />
-    <Compile Include="Tools.cs" />
+    <Compile Include="Validator.cs" />
     <Compile Include="Utilites\SocketHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

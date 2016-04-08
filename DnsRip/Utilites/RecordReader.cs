@@ -21,7 +21,7 @@ namespace DnsRip.Utilites
 
         public uint Ttl
         {
-            get { return (uint)Math.Max(0, _ttl); }
+            get { return Math.Max(0, _ttl); }
             set { _ttl = value; }
         }
 

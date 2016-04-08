@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace DnsRip.Interfaces
+﻿namespace DnsRip.Interfaces
 {
     public interface IResolveRequest
     {
