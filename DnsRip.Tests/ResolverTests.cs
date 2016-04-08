@@ -295,8 +295,10 @@ namespace DnsRip.Tests
         [Test, TestCaseSource(nameof(GetResolveTests))]
         public void Resolve(ResolveTest resolveTest)
         {
+            var validator = new DnsRip.Validator();
             var options = new ResolveOptions(resolveTest.Servers);
             var dnsRip = new DnsRip.Resolver(options);
+
             var resultSet = dnsRip.Resolve(resolveTest);
             var expectedSet = resolveTest.Expected.ToList();
             var index = 0;
@@ -314,28 +316,28 @@ namespace DnsRip.Tests
 
                 Assert.That(result.Host, Is.EqualTo(expected.Host));
                 Assert.That(result.Type, Is.EqualTo(expected.Type));
-                Assert.That(DnsRip.Tools.IsInteger(result.Ttl), Is.EqualTo(expected.TtlIsInteger));
+                Assert.That(validator.IsInteger(result.Ttl), Is.EqualTo(expected.TtlIsInteger));
 
                 if (expected.RecordIsIp4.HasValue)
-                    Assert.That(DnsRip.Tools.IsIp4(result.Record), Is.EqualTo(expected.RecordIsIp4));
+                    Assert.That(validator.IsIp4(result.Record), Is.EqualTo(expected.RecordIsIp4));
 
                 if (expected.RecordIsIp6.HasValue)
-                    Assert.That(DnsRip.Tools.IsIp6(result.Record), Is.EqualTo(expected.RecordIsIp6));
+                    Assert.That(validator.IsIp6(result.Record), Is.EqualTo(expected.RecordIsIp6));
 
                 if (expected.RecordIsHostname.HasValue)
-                    Assert.That(DnsRip.Tools.IsDns(result.Record), Is.EqualTo(expected.RecordIsHostname));
+                    Assert.That(validator.IsDomain(result.Record), Is.EqualTo(expected.RecordIsHostname));
 
                 if (expected.RecordIsMxRecord.HasValue)
-                    Assert.That(DnsRip.Tools.IsMx(result.Record), Is.EqualTo(expected.RecordIsMxRecord));
+                    Assert.That(validator.IsMx(result.Record), Is.EqualTo(expected.RecordIsMxRecord));
 
                 if (expected.RecordIsSoaRecord.HasValue)
-                    Assert.That(DnsRip.Tools.IsSoa(result.Record), Is.EqualTo(expected.RecordIsSoaRecord));
+                    Assert.That(validator.IsSoa(result.Record), Is.EqualTo(expected.RecordIsSoaRecord));
 
                 if (expected.RecordIsNotEmpty.HasValue)
                     Assert.That(!string.IsNullOrEmpty(result.Record), Is.EqualTo(expected.RecordIsNotEmpty));
 
                 if (expected.ServerIsIp.HasValue)
-                    Assert.That(DnsRip.Tools.IsIp4(result.Server), Is.EqualTo(expected.ServerIsIp));
+                    Assert.That(validator.IsIp4(result.Server), Is.EqualTo(expected.ServerIsIp));
 
                 index++;
             }

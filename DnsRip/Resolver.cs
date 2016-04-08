@@ -14,9 +14,11 @@ namespace DnsRip
             public Resolver(ResolveOptions options)
             {
                 _options = options;
+                _validator = new Validator();
             }
 
             private readonly ResolveOptions _options;
+            private readonly Validator _validator;
 
             public IEnumerable<ResolveResponse> Resolve(IResolveRequest request)
             {
@@ -64,9 +66,9 @@ namespace DnsRip
                 return resolved;
             }
 
-            private static DnsRequest GetDnsRequest(IResolveRequest request)
+            private DnsRequest GetDnsRequest(IResolveRequest request)
             {
-                if (request.Type == QueryType.PTR && Tools.IsIp(request.Query))
+                if (request.Type == QueryType.PTR && _validator.IsIp(request.Query))
                     request.Query = request.Query.ToArpaRequest();
 
                 var dnsHeader = new DnsHeader();
