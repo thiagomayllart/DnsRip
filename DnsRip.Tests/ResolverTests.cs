@@ -1,4 +1,5 @@
 ﻿using DnsRip.Models;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -90,33 +91,33 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
+                            Host = "fd-fp3.wg1.b.yahoo.com",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp4 = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "fd-fp3.wg1.b.yahoo.com",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp4 = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "fd-fp3.wg1.b.yahoo.com",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp4 = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "fd-fp3.wg1.b.yahoo.com",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp4 = true
+                        },
+                        new TestResponse
+                        {
                             Host = "www.yahoo.com",
                             Type = DnsRip.QueryType.CNAME,
                             RecordIsHostname = true
-                        },
-                        new TestResponse
-                        {
-                            Host = "fd-fp3.wg1.b.yahoo.com",
-                            Type = DnsRip.QueryType.A,
-                            RecordIsIp4 = true
-                        },
-                        new TestResponse
-                        {
-                            Host = "fd-fp3.wg1.b.yahoo.com",
-                            Type = DnsRip.QueryType.A,
-                            RecordIsIp4 = true
-                        },
-                        new TestResponse
-                        {
-                            Host = "fd-fp3.wg1.b.yahoo.com",
-                            Type = DnsRip.QueryType.A,
-                            RecordIsIp4 = true
-                        },
-                        new TestResponse
-                        {
-                            Host = "fd-fp3.wg1.b.yahoo.com",
-                            Type = DnsRip.QueryType.A,
-                            RecordIsIp4 = true
                         }
                     }
                 },
@@ -282,6 +283,117 @@ namespace DnsRip.Tests
                             ServerIsIp = true
                         }
                     }
+                },
+                new ResolveTest
+                {
+                    Query = "yahoo.com",
+                    Type = DnsRip.QueryType.ANY,
+                    Servers = new[] { "8.8.4.4" },
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp4 = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp4 = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.A,
+                            RecordIsIp4 = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.NS,
+                            RecordIsHostname = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.NS,
+                            RecordIsHostname = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.NS,
+                            RecordIsHostname = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.NS,
+                            RecordIsHostname = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.NS,
+                            RecordIsHostname = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.NS,
+                            RecordIsHostname = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.SOA,
+                            RecordIsSoaRecord = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.MX,
+                            RecordIsMxRecord = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.MX,
+                            RecordIsMxRecord = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.MX,
+                            RecordIsMxRecord = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.TXT,
+                            RecordIsNotEmpty = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.AAAA,
+                            RecordIsIp6 = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.AAAA,
+                            RecordIsIp6 = true
+                        },
+                        new TestResponse
+                        {
+                            Host = "yahoo.com",
+                            Type = DnsRip.QueryType.AAAA,
+                            RecordIsIp6 = true
+                        }
+                    }
                 }
             };
 
@@ -298,6 +410,12 @@ namespace DnsRip.Tests
             var resultSet = dnsRip.Resolve(resolveTest.Query, resolveTest.Type);
             var expectedSet = resolveTest.Expected.ToList();
             var index = 0;
+
+            resultSet = resultSet.OrderBy(r => r.Server)
+                .ThenBy(r => r.Type)
+                .ThenBy(r => r.Record);
+
+            var asdf = JsonConvert.SerializeObject(resultSet);
 
             foreach (var result in resultSet)
             {

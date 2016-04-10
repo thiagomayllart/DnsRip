@@ -20,7 +20,8 @@ namespace DnsRip
             MX = 15,
             SOA = 6,
             TXT = 16,
-            PTR = 12
+            PTR = 12,
+            ANY = 255
         }
     }
 }
