@@ -1,5 +1,4 @@
 using DnsRip.Extensions;
-using DnsRip.Interfaces;
 using DnsRip.Models;
 using DnsRip.Utilites;
 using System;
@@ -39,9 +38,9 @@ namespace DnsRip
             private int _retries;
             private TimeSpan _timeout;
 
-            public IEnumerable<ResolveResponse> Resolve(IResolveRequest request)
+            public IEnumerable<ResolveResponse> Resolve(string query, QueryType type)
             {
-                var dnsRequest = GetDnsRequest(request);
+                var dnsRequest = GetDnsRequest(query, type);
                 var resolved = new List<ResolveResponse>();
 
                 foreach (var server in Servers)
@@ -85,13 +84,13 @@ namespace DnsRip
                 return resolved;
             }
 
-            private DnsRequest GetDnsRequest(IResolveRequest request)
+            private DnsRequest GetDnsRequest(string query, QueryType type)
             {
-                if (request.Type == QueryType.PTR && Validator.IsIp(request.Query))
-                    request.Query = request.Query.ToArpaRequest();
+                if (type == QueryType.PTR && Validator.IsIp(query))
+                    query = query.ToArpaRequest();
 
                 var dnsHeader = new DnsHeader();
-                var dnsQuestion = new DnsQuestion(request.Query, request.Type);
+                var dnsQuestion = new DnsQuestion(query, type);
 
                 return new DnsRequest(dnsHeader, dnsQuestion);
             }

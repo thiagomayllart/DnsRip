@@ -56,10 +56,8 @@
     <Compile Include="Utilites\AnswerReader.cs" />
     <Compile Include="Utilites\AuthorityReader.cs" />
     <Compile Include="Models\DnsHeader.cs" />
-    <Compile Include="Models\ResolveRequest.cs" />
     <Compile Include="Models\ResolveResponse.cs" />
     <Compile Include="Enums.cs" />
-    <Compile Include="Interfaces\IResolveRequest.cs" />
     <Compile Include="Models\ParseResult.cs" />
     <Compile Include="Models\DnsQuestion.cs" />
     <Compile Include="Models\DnsRequest.cs" />

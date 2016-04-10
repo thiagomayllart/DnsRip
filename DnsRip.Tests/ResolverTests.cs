@@ -1,5 +1,4 @@
-﻿using DnsRip.Interfaces;
-using DnsRip.Models;
+﻿using DnsRip.Models;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -12,7 +11,7 @@ namespace DnsRip.Tests
     [TestFixture]
     public class ResolverTests
     {
-        public class ResolveTest : IResolveRequest
+        public class ResolveTest
         {
             public string Query { get; set; }
             public DnsRip.QueryType Type { get; set; }
@@ -296,13 +295,15 @@ namespace DnsRip.Tests
         public void Resolve(ResolveTest resolveTest)
         {
             var dnsRip = new DnsRip.Resolver(resolveTest.Servers);
-            var resultSet = dnsRip.Resolve(resolveTest);
+            var resultSet = dnsRip.Resolve(resolveTest.Query, resolveTest.Type);
             var expectedSet = resolveTest.Expected.ToList();
             var index = 0;
 
             foreach (var result in resultSet)
             {
                 Console.WriteLine(result.Server);
+                Console.WriteLine(resolveTest.Query);
+                Console.WriteLine(resolveTest.Type);
                 Console.WriteLine(result.Host);
                 Console.WriteLine(result.Ttl);
                 Console.WriteLine(result.Type);

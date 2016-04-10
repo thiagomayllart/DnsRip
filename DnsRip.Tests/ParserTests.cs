@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 
 // ReSharper disable UnusedMethodReturnValue.Local
@@ -180,6 +181,10 @@ namespace DnsRip.Tests
         {
             var parser = new DnsRip.Parser();
             var result = parser.Parse(parseTest.Input);
+
+            Console.WriteLine(result.Evaluated);
+            Console.WriteLine(result.Parsed);
+            Console.WriteLine(result.Type);
 
             Assert.That(result.Evaluated, Is.EqualTo(parseTest.Evaluated));
             Assert.That(result.Parsed, Is.EqualTo(parseTest.Parsed));
