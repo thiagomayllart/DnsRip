@@ -2,6 +2,7 @@ using DnsRip.Extensions;
 using DnsRip.Interfaces;
 using DnsRip.Models;
 using DnsRip.Utilites;
+using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 
@@ -11,31 +12,49 @@ namespace DnsRip
     {
         public class Resolver
         {
-            public Resolver(ResolveOptions options)
+            public Resolver(string server) : this(new[] { server })
+            { }
+
+            public Resolver(IEnumerable<string> servers)
             {
-                _options = options;
-                _validator = new Validator();
+                Servers = servers;
+                Validator = new Validator();
             }
 
-            private readonly ResolveOptions _options;
-            private readonly Validator _validator;
+            public int Retries
+            {
+                get { return _retries == 0 ? 3 : _retries; }
+                set { _retries = value; }
+            }
+
+            public TimeSpan Timeout
+            {
+                get { return _timeout.Ticks == 0 ? TimeSpan.FromSeconds(1) : _timeout; }
+                set { _timeout = value; }
+            }
+
+            public IEnumerable<string> Servers { get; set; }
+            public Validator Validator { get; set; }
+
+            private int _retries;
+            private TimeSpan _timeout;
 
             public IEnumerable<ResolveResponse> Resolve(IResolveRequest request)
             {
                 var dnsRequest = GetDnsRequest(request);
                 var resolved = new List<ResolveResponse>();
 
-                foreach (var server in _options.Servers)
+                foreach (var server in Servers)
                 {
                     var attempts = 0;
 
-                    while (attempts <= _options.Retries)
+                    while (attempts <= _retries)
                     {
                         attempts++;
 
                         try
                         {
-                            using (var socket = new SocketHelper(dnsRequest, server, _options.Timeout))
+                            using (var socket = new SocketHelper(dnsRequest, server, _timeout))
                             {
                                 var data = socket.Send();
                                 var dnsResponse = new DnsResponse(data);
@@ -68,7 +87,7 @@ namespace DnsRip
 
             private DnsRequest GetDnsRequest(IResolveRequest request)
             {
-                if (request.Type == QueryType.PTR && _validator.IsIp(request.Query))
+                if (request.Type == QueryType.PTR && Validator.IsIp(request.Query))
                     request.Query = request.Query.ToArpaRequest();
 
                 var dnsHeader = new DnsHeader();
