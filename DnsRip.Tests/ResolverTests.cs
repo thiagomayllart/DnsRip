@@ -415,8 +415,6 @@ namespace DnsRip.Tests
                 .ThenBy(r => r.Type)
                 .ThenBy(r => r.Record);
 
-            var asdf = JsonConvert.SerializeObject(resultSet);
-
             foreach (var result in resultSet)
             {
                 Console.WriteLine(result.Server);
