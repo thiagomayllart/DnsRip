@@ -51,7 +51,7 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp4 = true
                         }
@@ -65,19 +65,19 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "yahoo.com.",
+                            Host = "yahoo.com",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp4 = true
                         },
                         new TestResponse
                         {
-                            Host = "yahoo.com.",
+                            Host = "yahoo.com",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp4 = true
                         },
                         new TestResponse
                         {
-                            Host = "yahoo.com.",
+                            Host = "yahoo.com",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp4 = true
                         }
@@ -91,31 +91,31 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "www.yahoo.com.",
+                            Host = "www.yahoo.com",
                             Type = DnsRip.QueryType.CNAME,
                             RecordIsHostname = true
                         },
                         new TestResponse
                         {
-                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Host = "fd-fp3.wg1.b.yahoo.com",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp4 = true
                         },
                         new TestResponse
                         {
-                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Host = "fd-fp3.wg1.b.yahoo.com",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp4 = true
                         },
                         new TestResponse
                         {
-                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Host = "fd-fp3.wg1.b.yahoo.com",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp4 = true
                         },
                         new TestResponse
                         {
-                            Host = "fd-fp3.wg1.b.yahoo.com.",
+                            Host = "fd-fp3.wg1.b.yahoo.com",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp4 = true
                         }
@@ -129,7 +129,7 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.AAAA,
                             RecordIsIp6 = true
                         }
@@ -143,25 +143,25 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.NS,
                             RecordIsHostname = true
                         },
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.NS,
                             RecordIsHostname = true
                         },
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.NS,
                             RecordIsHostname = true
                         },
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.NS,
                             RecordIsHostname = true
                         }
@@ -175,31 +175,31 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.MX,
                             RecordIsMxRecord = true
                         },
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.MX,
                             RecordIsMxRecord = true
                         },
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.MX,
                             RecordIsMxRecord = true
                         },
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.MX,
                             RecordIsMxRecord = true
                         },
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.MX,
                             RecordIsMxRecord = true
                         }
@@ -213,7 +213,7 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.SOA,
                             RecordIsSoaRecord = true
                         }
@@ -227,7 +227,7 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.TXT,
                             RecordIsNotEmpty = true
                         }
@@ -241,7 +241,7 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "4.4.8.8.in-addr.arpa.",
+                            Host = "4.4.8.8.in-addr.arpa",
                             Type = DnsRip.QueryType.PTR,
                             RecordIsHostname = true
                         }
@@ -255,7 +255,7 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "e.0.0.2.0.0.0.0.0.0.0.0.0.0.0.0.8.0.8.0.9.0.0.4.0.b.8.f.7.0.6.2.ip6.arpa.",
+                            Host = "e.0.0.2.0.0.0.0.0.0.0.0.0.0.0.0.8.0.8.0.9.0.0.4.0.b.8.f.7.0.6.2.ip6.arpa",
                             Type = DnsRip.QueryType.PTR,
                             RecordIsHostname = true
                         }
@@ -270,14 +270,14 @@ namespace DnsRip.Tests
                     {
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp4 = true,
                             ServerIsIp = true
                         },
                         new TestResponse
                         {
-                            Host = "google.com.",
+                            Host = "google.com",
                             Type = DnsRip.QueryType.A,
                             RecordIsIp4 = true,
                             ServerIsIp = true

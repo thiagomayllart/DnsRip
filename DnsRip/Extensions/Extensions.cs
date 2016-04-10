@@ -31,6 +31,14 @@ namespace DnsRip.Extensions
             return query;
         }
 
+        internal static string FromNameFormat(this string query)
+        {
+            if (query.EndsWith("."))
+                query = query.TrimEnd('.');
+
+            return query;
+        }
+
         internal static string ToArpaRequest(this string query)
         {
             IPAddress ip;

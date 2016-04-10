@@ -64,7 +64,7 @@ namespace DnsRip
                                     resolved.Add(new ResolveResponse
                                     {
                                         Server = server,
-                                        Host = resp.Name,
+                                        Host = resp.Name.FromNameFormat(),
                                         Type = resp.Type,
                                         Record = resp.Record.ToString(),
                                         Ttl = resp.Ttl
