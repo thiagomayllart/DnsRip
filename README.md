@@ -54,7 +54,7 @@ var result4 = parser.Parse("random_string");
 ```
 
 ```javascript
-//results1 (serialized)
+//result1 (serialized)
 
 {
     "Input": "http://www.hostname.com:80",
@@ -63,7 +63,7 @@ var result4 = parser.Parse("random_string");
     "Type": DnsRip.InputType.Hostname
 }
 
-//results2 (serialized)
+//result2 (serialized)
 
 {
     "Input": "  http://192.168.10.1",
@@ -72,7 +72,7 @@ var result4 = parser.Parse("random_string");
     "Type": DnsRip.InputType.Ip
 }
 
-//results3 (serialized)
+//result3 (serialized)
 
 {
     "Input": "http://[FE80:0000:0000:0000:0202:B3FF:FE1E:8329]:8080/  ",
@@ -81,7 +81,7 @@ var result4 = parser.Parse("random_string");
     "Type": DnsRip.InputType.Ip
 }
 
-//results4 (serialized)
+//result4 (serialized)
 
 {
     "Input": "random_string",
