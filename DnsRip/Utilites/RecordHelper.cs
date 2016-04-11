@@ -97,32 +97,32 @@ namespace DnsRip.Utilites
             return (uint)(ReadUInt16() << 16 | ReadUInt16());
         }
 
-        public Record ReadRecord(DnsRip.QueryType type, int length)
+        public Record ReadRecord(QueryType type, int length)
         {
             switch (type)
             {
-                case DnsRip.QueryType.A:
+                case QueryType.A:
                     return new RecordA(this);
 
-                case DnsRip.QueryType.CNAME:
+                case QueryType.CNAME:
                     return new RecordCName(this);
 
-                case DnsRip.QueryType.AAAA:
+                case QueryType.AAAA:
                     return new RecordAaaa(this);
 
-                case DnsRip.QueryType.NS:
+                case QueryType.NS:
                     return new RecordNs(this);
 
-                case DnsRip.QueryType.MX:
+                case QueryType.MX:
                     return new RecordMx(this);
 
-                case DnsRip.QueryType.SOA:
+                case QueryType.SOA:
                     return new RecordSoa(this);
 
-                case DnsRip.QueryType.TXT:
+                case QueryType.TXT:
                     return new RecordTxt(this, length);
 
-                case DnsRip.QueryType.PTR:
+                case QueryType.PTR:
                     return new RecordPtr(this);
 
                 default:

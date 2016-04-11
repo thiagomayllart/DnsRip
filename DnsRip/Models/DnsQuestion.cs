@@ -7,7 +7,7 @@ namespace DnsRip.Models
 {
     public class DnsQuestion
     {
-        public DnsQuestion(string query, DnsRip.QueryType type)
+        public DnsQuestion(string query, QueryType type)
         {
             Query = query;
 
@@ -19,7 +19,7 @@ namespace DnsRip.Models
         {
             Query = helper.ReadDomainName();
 
-            _type = (DnsRip.QueryType)helper.ReadUInt16();
+            _type = (QueryType)helper.ReadUInt16();
             _class = helper.ReadUInt16();
         }
 
@@ -44,7 +44,7 @@ namespace DnsRip.Models
         }
 
         private string _query;
-        private readonly DnsRip.QueryType _type;
+        private readonly QueryType _type;
         private readonly int _class;
 
         private IEnumerable<byte> QueryToBytes()

@@ -8,14 +8,14 @@ namespace DnsRip.Utilites
         public RecordReader(RecordHelper helper)
         {
             Name = helper.ReadDomainName();
-            Type = (DnsRip.QueryType)helper.ReadUInt16();
+            Type = (QueryType)helper.ReadUInt16();
             Class = helper.ReadUInt16();
             Ttl = helper.ReadUInt32();
             Record = helper.ReadRecord(Type, helper.ReadUInt16());
         }
 
         public string Name;
-        public DnsRip.QueryType Type;
+        public QueryType Type;
         public int Class;
         public Record Record;
 

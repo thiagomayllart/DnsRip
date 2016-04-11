@@ -13,7 +13,7 @@ namespace DnsRip.Extensions
             return BitConverter.GetBytes(IPAddress.HostToNetworkOrder((short)value));
         }
 
-        internal static IEnumerable<byte> ToNetByteOrder(this DnsRip.QueryType value)
+        internal static IEnumerable<byte> ToNetByteOrder(this QueryType value)
         {
             return ((ushort)value).ToNetByteOrder();
         }

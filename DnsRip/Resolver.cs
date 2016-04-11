@@ -7,93 +7,90 @@ using System.Net.Sockets;
 
 namespace DnsRip
 {
-    public partial class DnsRip
+    public class Resolver
     {
-        public class Resolver
+        public Resolver(string server) : this(new[] { server })
+        { }
+
+        public Resolver(IEnumerable<string> servers)
         {
-            public Resolver(string server) : this(new[] { server })
-            { }
+            Servers = servers;
+            Validator = new Validator();
+        }
 
-            public Resolver(IEnumerable<string> servers)
+        public int Retries
+        {
+            get { return _retries == 0 ? 3 : _retries; }
+            set { _retries = value; }
+        }
+
+        public TimeSpan Timeout
+        {
+            get { return _timeout.Ticks == 0 ? TimeSpan.FromSeconds(1) : _timeout; }
+            set { _timeout = value; }
+        }
+
+        public IEnumerable<string> Servers { get; set; }
+        public Validator Validator { get; set; }
+
+        private int _retries;
+        private TimeSpan _timeout;
+
+        public IEnumerable<ResolveResponse> Resolve(string query, QueryType type)
+        {
+            var dnsRequest = GetDnsRequest(query, type);
+            var resolved = new List<ResolveResponse>();
+
+            foreach (var server in Servers)
             {
-                Servers = servers;
-                Validator = new Validator();
-            }
+                var attempts = 0;
 
-            public int Retries
-            {
-                get { return _retries == 0 ? 3 : _retries; }
-                set { _retries = value; }
-            }
-
-            public TimeSpan Timeout
-            {
-                get { return _timeout.Ticks == 0 ? TimeSpan.FromSeconds(1) : _timeout; }
-                set { _timeout = value; }
-            }
-
-            public IEnumerable<string> Servers { get; set; }
-            public Validator Validator { get; set; }
-
-            private int _retries;
-            private TimeSpan _timeout;
-
-            public IEnumerable<ResolveResponse> Resolve(string query, QueryType type)
-            {
-                var dnsRequest = GetDnsRequest(query, type);
-                var resolved = new List<ResolveResponse>();
-
-                foreach (var server in Servers)
+                while (attempts <= _retries)
                 {
-                    var attempts = 0;
+                    attempts++;
 
-                    while (attempts <= _retries)
+                    try
                     {
-                        attempts++;
-
-                        try
+                        using (var socket = new SocketHelper(dnsRequest, server, _timeout))
                         {
-                            using (var socket = new SocketHelper(dnsRequest, server, _timeout))
+                            var data = socket.Send();
+                            var dnsResponse = new DnsResponse(data);
+
+                            foreach (var resp in dnsResponse.Answers)
                             {
-                                var data = socket.Send();
-                                var dnsResponse = new DnsResponse(data);
-
-                                foreach (var resp in dnsResponse.Answers)
+                                resolved.Add(new ResolveResponse
                                 {
-                                    resolved.Add(new ResolveResponse
-                                    {
-                                        Server = server,
-                                        Host = resp.Name.FromNameFormat(),
-                                        Type = resp.Type,
-                                        Record = resp.Record.ToString(),
-                                        Ttl = resp.Ttl
-                                    });
-                                }
+                                    Server = server,
+                                    Host = resp.Name.FromNameFormat(),
+                                    Type = resp.Type,
+                                    Record = resp.Record.ToString(),
+                                    Ttl = resp.Ttl
+                                });
                             }
+                        }
 
-                            break;
-                        }
-                        catch (SocketException)
-                        {
-                            if (attempts >= 3)
-                                throw;
-                        }
+                        break;
+                    }
+                    catch (SocketException)
+                    {
+                        if (attempts >= 3)
+                            throw;
                     }
                 }
-
-                return resolved;
             }
 
-            private DnsRequest GetDnsRequest(string query, QueryType type)
-            {
-                if (type == QueryType.PTR && Validator.IsIp(query))
-                    query = query.ToArpaRequest();
+            return resolved;
+        }
 
-                var dnsHeader = new DnsHeader();
-                var dnsQuestion = new DnsQuestion(query, type);
+        private DnsRequest GetDnsRequest(string query, QueryType type)
+        {
+            if (type == QueryType.PTR && Validator.IsIp(query))
+                query = query.ToArpaRequest();
 
-                return new DnsRequest(dnsHeader, dnsQuestion);
-            }
+            var dnsHeader = new DnsHeader();
+            var dnsQuestion = new DnsQuestion(query, type);
+
+            return new DnsRequest(dnsHeader, dnsQuestion);
         }
     }
 }
