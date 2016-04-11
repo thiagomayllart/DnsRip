@@ -92,4 +92,4 @@ var result4 = parser.Parse("random_string");
 ```
 
 ## Credits
-[Alphons van der Heijden](http://www.codeproject.com/Articles/23673/DNS-NET-Resolver-C). 
+[Alphons van der Heijden](http://www.codeproject.com/Articles/23673/DNS-NET-Resolver-C)
