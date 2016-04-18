@@ -10,7 +10,7 @@
     <description>$description$</description>
     <copyright>Copyright © $author$ 2016</copyright>
     <projectUrl>https://github.com/ed-caicedo/DnsRip</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/ed-caicedo/DnsRip/master/nuget/icon-256.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/ed-caicedo/DnsRip/master/nuget/256.png</iconUrl>
     <tags>DNS Lookup Dig</tags>
     <dependencies />
   </metadata>
