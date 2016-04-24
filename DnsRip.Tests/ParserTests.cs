@@ -121,6 +121,20 @@ namespace DnsRip.Tests
                 },
                 new ParseTest
                 {
+                    Input = "hostname.co",
+                    Evaluated = "hostname.co",
+                    Parsed = "hostname.co",
+                    Type = InputType.Hostname
+                },
+                new ParseTest
+                {
+                    Input = "hostname.co.",
+                    Evaluated = "hostname.co.",
+                    Parsed = "hostname.co",
+                    Type = InputType.Hostname
+                },
+                new ParseTest
+                {
                     Input = "hostname.com",
                     Evaluated = "hostname.com",
                     Parsed = "hostname.com",
