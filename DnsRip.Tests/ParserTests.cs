@@ -107,6 +107,13 @@ namespace DnsRip.Tests
                 },
                 new ParseTest
                 {
+                    Input = "192.168",
+                    Evaluated = "192.168",
+                    Parsed = null,
+                    Type = InputType.Invalid
+                },
+                new ParseTest
+                {
                     Input = "random_string",
                     Evaluated = "random_string",
                     Parsed = null,
