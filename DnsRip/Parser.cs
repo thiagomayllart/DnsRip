@@ -1,9 +1,10 @@
 ﻿using DnsRip.Models;
 using System.Text.RegularExpressions;
+using DnsRip.Interfaces;
 
 namespace DnsRip
 {
-    public class Parser
+    public class Parser : IParser
     {
         public ParseResult Parse(string input)
         {

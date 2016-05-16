@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\Extensions.cs" />
+    <Compile Include="Interfaces\IParser.cs" />
     <Compile Include="Models\Record.cs" />
     <Compile Include="Models\RecordA.cs" />
     <Compile Include="Models\RecordCName.cs" />
