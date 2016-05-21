@@ -63,5 +63,11 @@ namespace DnsRip.Utilites
 
             return true;
         }
+
+        public bool IsValidType(string query)
+        {
+            QueryType type;
+            return Enum.TryParse(query, out type);
+        }
     }
 }
