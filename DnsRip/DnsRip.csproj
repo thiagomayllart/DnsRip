@@ -42,6 +42,8 @@
   <ItemGroup>
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Interfaces\IParser.cs" />
+    <Compile Include="Interfaces\IResolver.cs" />
+    <Compile Include="Interfaces\IResolverFactory.cs" />
     <Compile Include="Models\Record.cs" />
     <Compile Include="Models\RecordA.cs" />
     <Compile Include="Models\RecordCName.cs" />
@@ -53,6 +55,7 @@
     <Compile Include="Models\RecordPtr.cs" />
     <Compile Include="Models\RecordUnknown.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="ResolverFactory.cs" />
     <Compile Include="Utilites\AdditionalReader.cs" />
     <Compile Include="Utilites\AnswerReader.cs" />
     <Compile Include="Utilites\AuthorityReader.cs" />

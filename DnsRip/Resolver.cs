@@ -1,4 +1,5 @@
 using DnsRip.Extensions;
+using DnsRip.Interfaces;
 using DnsRip.Models;
 using DnsRip.Utilites;
 using System;
@@ -7,10 +8,11 @@ using System.Net.Sockets;
 
 namespace DnsRip
 {
-    public class Resolver
+    public class Resolver : IResolver
     {
         public Resolver(string server) : this(new[] { server })
-        { }
+        {
+        }
 
         public Resolver(IEnumerable<string> servers)
         {

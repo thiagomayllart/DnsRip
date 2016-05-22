@@ -1,6 +1,6 @@
-﻿using DnsRip.Models;
+﻿using DnsRip.Interfaces;
+using DnsRip.Models;
 using System.Text.RegularExpressions;
-using DnsRip.Interfaces;
 
 namespace DnsRip
 {
