@@ -393,6 +393,21 @@ namespace DnsRip.Tests
                             RecordIsIp6 = true
                         }
                     }
+                },
+                new ResolveTest
+                {
+                    Query = "netsol.com",
+                    Type = QueryType.A,
+                    Servers = new[] { "ns1.netsol.com" },
+                    Expected = new List<TestResponse>
+                    {
+                        new TestResponse
+                        {
+                            Host = "netsol.com",
+                            Type = QueryType.A,
+                            RecordIsIp4 = true
+                        }
+                    }
                 }
             };
 

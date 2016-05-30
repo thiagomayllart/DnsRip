@@ -1,4 +1,5 @@
-﻿using DnsRip.Models;
+﻿using DnsRip.Exceptions;
+using DnsRip.Models;
 using System;
 using System.Net;
 using System.Net.Sockets;
@@ -9,8 +10,22 @@ namespace DnsRip.Utilites
     {
         public SocketHelper(DnsRequest request, string server, TimeSpan timeout)
         {
+            try
+            {
+                IPAddress ip;
+                IPAddress.TryParse(server, out ip);
+
+                if (ip == null)
+                    IPAddress.TryParse(Dns.GetHostEntry(server).AddressList[0].ToString(), out ip);
+
+                _server = new IPEndPoint(ip, 53);
+            }
+            catch
+            {
+                throw new InvalidNameserverException(server);
+            }
+
             _request = request;
-            _server = new IPEndPoint(IPAddress.Parse(server), 53);
             _timeout = timeout;
         }
 
