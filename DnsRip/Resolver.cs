@@ -86,7 +86,7 @@ namespace DnsRip
 
         private DnsRequest GetDnsRequest(string query, QueryType type)
         {
-            if (type == QueryType.PTR && Validator.IsIp(query))
+            if ((type == QueryType.PTR || type == QueryType.ANY) && Validator.IsIp(query))
                 query = query.ToArpaRequest();
 
             var dnsHeader = new DnsHeader();
