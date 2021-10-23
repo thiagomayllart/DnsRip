@@ -1,10 +1,9 @@
-﻿using DnsRip.Interfaces;
 using DnsRip.Models;
 using System.Text.RegularExpressions;
 
 namespace DnsRip
 {
-    public class Parser : IParser
+    public class Parser
     {
         public ParseResult Parse(string input)
         {
@@ -23,7 +22,7 @@ namespace DnsRip
                 return result;
             }
 
-            match = Regex.Match(result.Evaluated, @"((([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z0|[A-Za-z0][A-Za-z\-]*[A-Za-z]))($|\.|/|:)");
+            match = Regex.Match(result.Evaluated, @"((([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)+([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9]))($|\.|/|:)");
 
             if (match.Success)
             {
