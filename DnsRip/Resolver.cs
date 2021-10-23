@@ -1,5 +1,4 @@
 using DnsRip.Extensions;
-using DnsRip.Interfaces;
 using DnsRip.Models;
 using DnsRip.Utilites;
 using System;
@@ -8,11 +7,10 @@ using System.Net.Sockets;
 
 namespace DnsRip
 {
-    public class Resolver : IResolver
+    public class Resolver
     {
         public Resolver(string server) : this(new[] { server })
-        {
-        }
+        { }
 
         public Resolver(IEnumerable<string> servers)
         {
@@ -86,7 +84,7 @@ namespace DnsRip
 
         private DnsRequest GetDnsRequest(string query, QueryType type)
         {
-            if ((type == QueryType.PTR || type == QueryType.ANY) && Validator.IsIp(query))
+            if (type == QueryType.PTR && Validator.IsIp(query))
                 query = query.ToArpaRequest();
 
             var dnsHeader = new DnsHeader();
