@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace DnsRip.Utilites
 {
@@ -62,12 +62,6 @@ namespace DnsRip.Utilites
             }
 
             return true;
-        }
-
-        public bool IsValidType(string queryType)
-        {
-            QueryType type;
-            return Enum.TryParse(queryType, out type);
         }
     }
 }
